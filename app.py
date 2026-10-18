@@ -388,8 +388,8 @@ if input_mode == "🔤 By Molecule Name (e.g. Glucose, Aspirin)":
     st.sidebar.caption("Type any chemical or drug name (one per line):")
     name_input = st.sidebar.text_area(
         "Molecules:",
-        value="glucose\ncaffeine\naspirin\nibuprofen\nvitamin C",
-        height=180
+        value="glucose\ncaffeine\naspirin",
+        height=140
     )
     raw_names = [n.strip() for n in name_input.split('\n') if n.strip()]
 
@@ -417,7 +417,7 @@ elif input_mode == "🧪 By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
     smiles_input = st.sidebar.text_area(
         "SMILES strings (one per line):",
         value="NCCCC\nCCC\nCN",
-        height=180
+        height=140
     )
     raw_smiles = [s.strip() for s in smiles_input.split('\n') if s.strip()]
     for i, smi in enumerate(raw_smiles):
@@ -428,13 +428,13 @@ elif input_mode == "🧪 By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
             "iupac": ""
         })
 
-else: # Quick Example Presets
+else: # Quick Example Presets (Max 3 molecules per preset for a single clean row)
     preset = st.sidebar.selectbox(
         "Select a curated compound set:",
         [
             "Sugars & Nutrients (Glucose, Sucrose, Vitamin C)",
             "Everyday Analgesics (Aspirin, Paracetamol, Ibuprofen)",
-            "Solubility Extremes (Ethanol vs. Cholesterol)",
+            "Solubility Extremes (Ethanol, Aspirin, Cholesterol)",
             "Data Professor Video Defaults (NCCCC, CCC, CN)"
         ]
     )
@@ -442,8 +442,8 @@ else: # Quick Example Presets
         preset_names = ["glucose", "sucrose", "vitamin c"]
     elif preset == "Everyday Analgesics (Aspirin, Paracetamol, Ibuprofen)":
         preset_names = ["aspirin", "paracetamol", "ibuprofen"]
-    elif preset == "Solubility Extremes (Ethanol vs. Cholesterol)":
-        preset_names = ["ethanol", "glucose", "aspirin", "cholesterol"]
+    elif preset == "Solubility Extremes (Ethanol, Aspirin, Cholesterol)":
+        preset_names = ["ethanol", "aspirin", "cholesterol"]
     else:
         preset_names = None
         molecules_to_process = [
@@ -525,17 +525,21 @@ else:
 
         with tab1:
             st.subheader("2D Chemical Structures & Solubility Assessment")
-            cols = st.columns(min(len(records), 3))
-            for i, r in enumerate(records):
-                col = cols[i % len(cols)]
-                with col:
-                    img = Draw.MolToImage(r["Mol"], size=(300, 240))
-                    st.image(img, use_container_width=True)
-                    st.markdown(f"### {r['DisplayName']}")
-                    if r["Formula"]:
-                        st.caption(f"Formula: `{r['Formula']}`")
-                    st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
-                    st.info(f"**{r['Classification']}**\n\n{r['Explanation']}")
+            # Always use a fixed 3-column grid layout so that 1, 2, or 3 molecules
+            # stay the exact same consistent 1/3-width size and do not stretch!
+            NUM_COLS = 3
+            for row_start in range(0, len(records), NUM_COLS):
+                row_items = records[row_start:row_start + NUM_COLS]
+                cols = st.columns(NUM_COLS)
+                for col_idx, r in enumerate(row_items):
+                    with cols[col_idx]:
+                        img = Draw.MolToImage(r["Mol"], size=(300, 240))
+                        st.image(img, use_container_width=True)
+                        st.markdown(f"### {r['DisplayName']}")
+                        if r["Formula"]:
+                            st.caption(f"Formula: `{r['Formula']}`")
+                        st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
+                        st.info(f"**{r['Classification']}**\n\n{r['Explanation']}")
 
         with tab2:
             st.subheader("Solubility Predictions Summary")
