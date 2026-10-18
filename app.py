@@ -579,17 +579,38 @@ css_styles = """
             box-shadow: 0 0 0 1px #D4AF37 !important;
         }
 
-        /* Unadjustable & Auto-Adapting Molecule Input Textarea */
+        /* Molecule Input Box: Exactly 3 rows tall; no scroll for <= 3 rows; scrollbar for > 3 rows */
         .stTextArea,
         .stTextArea textarea,
         textarea {
             resize: none !important;
-            field-sizing: content !important;
             box-sizing: border-box !important;
-            overflow-y: hidden !important;
+            height: 96px !important;
+            min-height: 96px !important;
+            max-height: 96px !important;
+            line-height: 1.45 !important;
+            padding: 10px 12px !important;
+            font-size: 0.92rem !important;
+            overflow-y: auto !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: #D4AF37 #09090b !important;
         }
         .stTextArea textarea::-webkit-resizer {
             display: none !important;
+        }
+        .stTextArea textarea::-webkit-scrollbar {
+            width: 5px !important;
+        }
+        .stTextArea textarea::-webkit-scrollbar-track {
+            background: #09090b !important;
+            border-radius: 4px !important;
+        }
+        .stTextArea textarea::-webkit-scrollbar-thumb {
+            background: #D4AF37 !important;
+            border-radius: 4px !important;
+        }
+        .stTextArea textarea::-webkit-scrollbar-thumb:hover {
+            background: #F8ECC2 !important;
         }
 
         /* Buttons & Actions in Pure Metallic Gold */
@@ -660,14 +681,10 @@ molecules_to_process = []
 if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
     st.sidebar.markdown("**Translate Common Names into SMILES:**")
     st.sidebar.caption("Type any chemical or drug name (one per line):")
-    current_names = st.session_state.get("name_input_area", "glucose\ncaffeine\naspirin")
-    line_count = max(len([l for l in current_names.split('\n') if l.strip()]), 2)
-    dynamic_name_height = max(80, min(line_count * 25 + 32, 450))
     name_input = st.sidebar.text_area(
         "Molecules:",
         value="glucose\ncaffeine\naspirin",
-        height=dynamic_name_height,
-        key="name_input_area"
+        height=96
     )
     raw_names = [n.strip() for n in name_input.split('\n') if n.strip()]
 
@@ -692,14 +709,10 @@ if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
 
 elif input_mode == "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
     st.sidebar.markdown("**Direct SMILES Input:**")
-    current_smiles = st.session_state.get("smiles_input_area", "NCCCC\nCCC\nCN")
-    line_count_smi = max(len([l for l in current_smiles.split('\n') if l.strip()]), 2)
-    dynamic_smiles_height = max(80, min(line_count_smi * 25 + 32, 450))
     smiles_input = st.sidebar.text_area(
         "SMILES strings (one per line):",
         value="NCCCC\nCCC\nCN",
-        height=dynamic_smiles_height,
-        key="smiles_input_area"
+        height=96
     )
     raw_smiles = [s.strip() for s in smiles_input.split('\n') if s.strip()]
     for i, smi in enumerate(raw_smiles):
