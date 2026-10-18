@@ -553,7 +553,8 @@ else:
         [data-testid="manage-app-button"] {display: none !important;}
 
         /* Sidebar Theme Pill Styling (Top Left) */
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] {
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"],
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] > div {
             margin-top: 0px !important;
             margin-bottom: 14px !important;
             border-radius: 9999px !important;
@@ -571,13 +572,21 @@ else:
             font-weight: 500 !important;
             border: none !important;
             background: transparent !important;
+            background-color: transparent !important;
             color: #64748b !important;
+            box-shadow: none !important;
         }
         [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button[aria-checked="true"] {
             background: #ffffff !important;
+            background-color: #ffffff !important;
             color: #0284c7 !important;
             font-weight: 700 !important;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12) !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button p,
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button span {
+            color: inherit !important;
+            background: transparent !important;
         }
 
         /* Light Theme Overrides with Moving Blueprint 3D Background */
@@ -609,16 +618,48 @@ else:
             backdrop-filter: blur(16px) !important;
             border-right: 1px solid rgba(2, 132, 199, 0.18) !important;
         }
-        [data-testid="stSidebar"] [role="radiogroup"] label div[role="radio"] {
+
+        /* Sidebar Radio Fix - White unselected circles, not black */
+        [data-testid="stSidebar"] [data-testid="stRadio"] [data-baseweb="radio"] > div:first-of-type,
+        [data-testid="stSidebar"] [data-baseweb="radio"] div {
             background-color: #ffffff !important;
+            background: #ffffff !important;
+            border-color: #94a3b8 !important;
+        }
+        [data-testid="stSidebar"] [data-baseweb="radio"] input:not(:checked) + div {
+            background-color: #ffffff !important;
+            background: #ffffff !important;
             border: 2px solid #94a3b8 !important;
         }
-        [data-testid="stSidebar"] [role="radiogroup"] label div[role="radio"][aria-checked="true"] {
-            border-color: #0284c7 !important;
-            background-color: #0284c7 !important;
+        [data-testid="stSidebar"] [data-baseweb="radio"] input:not(:checked) + div * {
+            background-color: transparent !important;
+            background: transparent !important;
+            border: none !important;
         }
-        [data-testid="stSidebar"] [role="radiogroup"] label span {
+        [data-testid="stSidebar"] [data-baseweb="radio"] input:checked + div {
+            border-color: #0284c7 !important;
+            background-color: #ffffff !important;
+            background: #ffffff !important;
+        }
+        [data-testid="stSidebar"] [data-baseweb="radio"] input:checked + div > div {
+            background-color: #0284c7 !important;
+            background: #0284c7 !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stRadio"] label span {
             color: #1e293b !important;
+        }
+
+        /* Sidebar Textarea & Inputs Fix */
+        [data-testid="stSidebar"] textarea,
+        [data-testid="stSidebar"] [data-baseweb="textarea"] {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+        }
+        [data-testid="stSidebar"] textarea:focus {
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 1px #0284c7 !important;
         }
         .stMarkdown, p, span, label, h1, h2, h3, h4 {
             color: #0f172a !important;
@@ -937,7 +978,44 @@ else:
                         if r["Formula"]:
                             st.caption(f"Formula: `{r['Formula']}`")
                         st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
-                        st.info(f"**{r['Classification']}**\n\n{r['Explanation']}")
+                        if is_dark:
+                            st.markdown(f"""
+                            <div style="
+                                background-color: #0c0c0e;
+                                border: 1px solid rgba(212, 175, 55, 0.3);
+                                border-left: 3px solid #D4AF37;
+                                border-radius: 8px;
+                                padding: 12px 14px;
+                                margin-top: 10px;
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+                            ">
+                                <div style="color: #DFB15B; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">
+                                    {r['Classification']}
+                                </div>
+                                <div style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.45;">
+                                    {r['Explanation']}
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                            <div style="
+                                background-color: #f0f9ff;
+                                border: 1px solid rgba(2, 132, 199, 0.25);
+                                border-left: 3px solid #0284c7;
+                                border-radius: 8px;
+                                padding: 12px 14px;
+                                margin-top: 10px;
+                                box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
+                            ">
+                                <div style="color: #0369a1; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">
+                                    {r['Classification']}
+                                </div>
+                                <div style="color: #0c4a6e; font-size: 0.85rem; line-height: 1.45;">
+                                    {r['Explanation']}
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
 
             st.markdown("---")
             st.subheader("Solubility Predictions Summary")
@@ -958,14 +1036,6 @@ else:
             } for r in records])
 
             st.dataframe(display_df, use_container_width=True)
-
-            csv = display_df.to_csv(index=False).encode('utf-8')
-            st.download_button(
-                label="↓ Download Results as CSV",
-                data=csv,
-                file_name="solubility_predictions.csv",
-                mime="text/csv"
-            )
 
         with tab2:
             st.subheader("Model Architecture & Feature Extraction")
@@ -1016,7 +1086,40 @@ else:
             ])
             st.dataframe(desc_table, use_container_width=True, hide_index=True)
 
-            st.success(f"**Predicted Aqueous Solubility:** **{s_pred:.3f} LogS (mol/L)** — **{sample['Classification']}** ({sample['Explanation']})")
+            if is_dark:
+                st.markdown(f"""
+                <div style="
+                    background-color: #0c0c0e;
+                    border: 1px solid rgba(212, 175, 55, 0.35);
+                    border-left: 4px solid #D4AF37;
+                    border-radius: 8px;
+                    padding: 14px 16px;
+                    margin-top: 14px;
+                    font-size: 0.95rem;
+                ">
+                    <strong style="color: #DFB15B;">Predicted Aqueous Solubility:</strong> 
+                    <span style="color: #F8ECC2; font-weight: 700;">{s_pred:.3f} LogS (mol/L)</span> — 
+                    <span style="color: #DFB15B; font-weight: 600;">{sample['Classification']}</span> 
+                    <span style="color: #cbd5e1;">({sample['Explanation']})</span>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div style="
+                    background-color: #f0fdf4;
+                    border: 1px solid #bbf7d0;
+                    border-left: 4px solid #16a34a;
+                    border-radius: 8px;
+                    padding: 14px 16px;
+                    margin-top: 14px;
+                    font-size: 0.95rem;
+                ">
+                    <strong style="color: #14532d;">Predicted Aqueous Solubility:</strong> 
+                    <span style="color: #15803d; font-weight: 700;">{s_pred:.3f} LogS (mol/L)</span> — 
+                    <span style="color: #15803d; font-weight: 600;">{sample['Classification']}</span> 
+                    <span style="color: #166534;">({sample['Explanation']})</span>
+                </div>
+                """, unsafe_allow_html=True)
 
         with tab3:
             st.subheader("◈ Model Accuracy Benchmark: 77.00% Baseline vs. 91.52% CV (99.93% Benchmark)")
