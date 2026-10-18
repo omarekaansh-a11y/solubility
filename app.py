@@ -278,106 +278,92 @@ with open(model_path, 'rb') as f:
     model_meta = pickle.load(f)
 predictive_model = model_meta["model"]
 
-######################
-# Sidebar Theme Pill (Top Left, No Emojis)
-######################
-theme_choice = st.sidebar.segmented_control(
-    "Theme",
-    options=["Dark", "Light"],
-    default="Dark",
-    label_visibility="collapsed",
-    key="sidebar_theme_pill"
-)
+st.markdown("""
+<style>
+    @import url('https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700,800,900&display=swap');
 
-if not theme_choice:
-    theme_choice = "Dark"
-is_dark = (theme_choice == "Dark")
+    /* Switzer Typography for All Headings */
+    h1, h2, h3, h4, h5, h6,
+    .stTitle, .stSubheader,
+    [data-testid="stHeadingWithActionElements"],
+    [data-testid="stHeadingWithActionElements"] *,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        font-family: 'Switzer', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        letter-spacing: -0.025em !important;
+    }
+    h1 {
+        font-weight: 700 !important;
+        letter-spacing: -0.03em !important;
+    }
+    h2, .stSubheader {
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
+    }
+    h3 {
+        font-weight: 600 !important;
+        letter-spacing: -0.015em !important;
+    }
+    h4, h5 {
+        font-weight: 600 !important;
+    }
 
-if is_dark:
-    st.markdown("""
-    <style>
-        /* Universal Anti-Horizontal Scroll & Box Sizing */
-        *, *::before, *::after {
-            box-sizing: border-box !important;
-        }
-        html, body {
-            overflow-x: hidden !important;
-            max-width: 100vw !important;
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main, .main {
-            overflow-x: hidden !important;
-            max-width: 100vw !important;
-            width: 100% !important;
-        }
-        .block-container {
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-            padding-top: 1.5rem !important;
-        }
-        [data-testid="stHorizontalBlock"] {
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-        }
-        [data-testid="column"] {
-            min-width: 0 !important;
-            max-width: 100% !important;
-        }
-        table, .stTable {
-            max-width: 100% !important;
-            word-break: break-word !important;
-            table-layout: auto !important;
-        }
-        [data-testid="stDataFrame"], .stDataFrame {
-            max-width: 100% !important;
-            width: 100% !important;
-        }
-        img {
-            max-width: 100% !important;
-            height: auto !important;
-        }
+    /* Universal Anti-Horizontal Scroll & Box Sizing */
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main, .main {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+    }
+    .block-container {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        padding-top: 1.5rem !important;
+    }
+    [data-testid="stHorizontalBlock"] {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    [data-testid="column"] {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+    table, .stTable {
+        max-width: 100% !important;
+        word-break: break-word !important;
+        table-layout: auto !important;
+    }
+    [data-testid="stDataFrame"], .stDataFrame {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
 
-        /* Remove Streamlit branding, menu, and footers */
-        #MainMenu {visibility: hidden !important; display: none !important;}
-        footer {visibility: hidden !important; display: none !important;}
-        header {visibility: hidden !important; display: none !important;}
-        .stDeployButton {display: none !important;}
-        [data-testid="stDecoration"] {display: none !important;}
-        [data-testid="stStatusWidget"] {display: none !important;}
-        [data-testid="stToolbar"] {display: none !important;}
-        .viewerBadge_container__1QSob {display: none !important;}
-        [data-testid="manage-app-button"] {display: none !important;}
-
-        /* Sidebar Theme Pill Styling (Top Left) */
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] {
-            margin-top: 0px !important;
-            margin-bottom: 14px !important;
-            border-radius: 9999px !important;
-            background: #0d0d0d !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            padding: 2px !important;
-            width: fit-content !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button {
-            border-radius: 9999px !important;
-            padding: 2px 14px !important;
-            min-height: 24px !important;
-            height: 26px !important;
-            font-size: 12px !important;
-            font-weight: 500 !important;
-            border: none !important;
-            color: #a1a1aa !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button[aria-checked="true"] {
-            background: linear-gradient(135deg, #F8ECC2 0%, #D4AF37 50%, #996515 100%) !important;
-            color: #050505 !important;
-            font-weight: 700 !important;
-            box-shadow: 0 2px 12px rgba(212, 175, 55, 0.3) !important;
-        }
+    /* Remove Streamlit branding, menu, and footers */
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    header {visibility: hidden !important; display: none !important;}
+    .stDeployButton {display: none !important;}
+    [data-testid="stDecoration"] {display: none !important;}
+    [data-testid="stStatusWidget"] {display: none !important;}
+    [data-testid="stToolbar"] {display: none !important;}
+    .viewerBadge_container__1QSob {display: none !important;}
+    [data-testid="manage-app-button"] {display: none !important;}
 
         /* Dark Theme Overrides with Solid Black & Authentic Luxury Metallic Gold */
         .stApp {
@@ -492,315 +478,8 @@ if is_dark:
         }
     </style>
     """, unsafe_allow_html=True)
-else:
-    st.markdown("""
-    <style>
-        /* Universal Anti-Horizontal Scroll & Box Sizing */
-        *, *::before, *::after {
-            box-sizing: border-box !important;
-        }
-        html, body {
-            overflow-x: hidden !important;
-            max-width: 100vw !important;
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main, .main {
-            overflow-x: hidden !important;
-            max-width: 100vw !important;
-            width: 100% !important;
-        }
-        .block-container {
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-            padding-top: 1.5rem !important;
-        }
-        [data-testid="stHorizontalBlock"] {
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-        }
-        [data-testid="column"] {
-            min-width: 0 !important;
-            max-width: 100% !important;
-        }
-        table, .stTable {
-            max-width: 100% !important;
-            word-break: break-word !important;
-            table-layout: auto !important;
-        }
-        [data-testid="stDataFrame"], .stDataFrame {
-            max-width: 100% !important;
-            width: 100% !important;
-        }
-        img {
-            max-width: 100% !important;
-            height: auto !important;
-        }
 
-        /* Remove Streamlit branding, menu, and footers */
-        #MainMenu {visibility: hidden !important; display: none !important;}
-        footer {visibility: hidden !important; display: none !important;}
-        header {visibility: hidden !important; display: none !important;}
-        .stDeployButton {display: none !important;}
-        [data-testid="stDecoration"] {display: none !important;}
-        [data-testid="stStatusWidget"] {display: none !important;}
-        [data-testid="stToolbar"] {display: none !important;}
-        .viewerBadge_container__1QSob {display: none !important;}
-        [data-testid="manage-app-button"] {display: none !important;}
-
-        /* Sidebar Theme Pill Styling (Top Left) */
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"],
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] > div {
-            margin-top: 0px !important;
-            margin-bottom: 14px !important;
-            border-radius: 9999px !important;
-            background: #e2e8f0 !important;
-            border: 1px solid #cbd5e1 !important;
-            padding: 2px !important;
-            width: fit-content !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button {
-            border-radius: 9999px !important;
-            padding: 2px 14px !important;
-            min-height: 24px !important;
-            height: 26px !important;
-            font-size: 12px !important;
-            font-weight: 500 !important;
-            border: none !important;
-            background: transparent !important;
-            background-color: transparent !important;
-            color: #64748b !important;
-            box-shadow: none !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button[aria-checked="true"] {
-            background: #ffffff !important;
-            background-color: #ffffff !important;
-            color: #0284c7 !important;
-            font-weight: 700 !important;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12) !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button p,
-        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button span {
-            color: inherit !important;
-            background: transparent !important;
-        }
-
-        /* Light Theme Overrides with Moving Blueprint 3D Background */
-        .stApp {
-            background-color: #f0f7ff !important;
-            background-image: 
-                radial-gradient(ellipse at 50% 25%, rgba(2, 132, 199, 0.08) 0%, rgba(240, 247, 255, 0.95) 75%),
-                linear-gradient(rgba(2, 132, 199, 0.14) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(2, 132, 199, 0.14) 1px, transparent 1px),
-                linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px) !important;
-            background-size: 100% 100%, 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
-            background-position: 0 0, 0 0, 0 0, 0 0, 0 0 !important;
-            animation: blueprint-drift-light 40s linear infinite !important;
-            color: #0f172a !important;
-        }
-
-        @keyframes blueprint-drift-light {
-            0% {
-                background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
-            }
-            100% {
-                background-position: 0 0, 100px 100px, 100px 100px, 100px 100px, 100px 100px;
-            }
-        }
-
-        [data-testid="stSidebar"] {
-            background-color: rgba(248, 250, 252, 0.95) !important;
-            backdrop-filter: blur(16px) !important;
-            border-right: 1px solid rgba(2, 132, 199, 0.18) !important;
-        }
-
-        /* Sidebar Radio Fix - White unselected circles, not black */
-        [data-testid="stSidebar"] [data-testid="stRadio"] [data-baseweb="radio"] > div:first-of-type,
-        [data-testid="stSidebar"] [data-baseweb="radio"] div {
-            background-color: #ffffff !important;
-            background: #ffffff !important;
-            border-color: #94a3b8 !important;
-        }
-        [data-testid="stSidebar"] [data-baseweb="radio"] input:not(:checked) + div {
-            background-color: #ffffff !important;
-            background: #ffffff !important;
-            border: 2px solid #94a3b8 !important;
-        }
-        [data-testid="stSidebar"] [data-baseweb="radio"] input:not(:checked) + div * {
-            background-color: transparent !important;
-            background: transparent !important;
-            border: none !important;
-        }
-        [data-testid="stSidebar"] [data-baseweb="radio"] input:checked + div {
-            border-color: #0284c7 !important;
-            background-color: #ffffff !important;
-            background: #ffffff !important;
-        }
-        [data-testid="stSidebar"] [data-baseweb="radio"] input:checked + div > div {
-            background-color: #0284c7 !important;
-            background: #0284c7 !important;
-        }
-        [data-testid="stSidebar"] [data-testid="stRadio"] label span {
-            color: #1e293b !important;
-        }
-
-        /* Sidebar Textarea & Inputs Fix */
-        [data-testid="stSidebar"] textarea,
-        [data-testid="stSidebar"] [data-baseweb="textarea"] {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 8px !important;
-        }
-        [data-testid="stSidebar"] textarea:focus {
-            border-color: #0284c7 !important;
-            box-shadow: 0 0 0 1px #0284c7 !important;
-        }
-        .stMarkdown, p, span, label, h1, h2, h3, h4 {
-            color: #0f172a !important;
-        }
-        .mol-card {
-            background: rgba(255, 255, 255, 0.92) !important;
-            backdrop-filter: blur(14px) !important;
-            border: 1px solid rgba(2, 132, 199, 0.22) !important;
-            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        [data-testid="stMetricValue"] {
-            color: #0284c7 !important;
-            font-weight: 700 !important;
-        }
-        [data-testid="stMetricLabel"] {
-            color: #64748b !important;
-        }
-
-        /* Tabs Light Theme */
-        button[data-baseweb="tab"] {
-            color: #64748b !important;
-            font-weight: 500 !important;
-        }
-        button[data-baseweb="tab"]:hover {
-            color: #0284c7 !important;
-        }
-        button[data-baseweb="tab"][aria-selected="true"] {
-            color: #0284c7 !important;
-            border-bottom: 2px solid #0284c7 !important;
-        }
-        button[data-baseweb="tab"][aria-selected="true"] p, 
-        button[data-baseweb="tab"][aria-selected="true"] div {
-            color: #0284c7 !important;
-            font-weight: 600 !important;
-        }
-
-        /* Selectboxes & Dropdowns Fix for Light Theme */
-        [data-baseweb="select"], [data-baseweb="select"] > div {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 8px !important;
-        }
-        [data-baseweb="select"] * {
-            color: #0f172a !important;
-            fill: #0f172a !important;
-        }
-        div[data-baseweb="popover"], div[data-baseweb="popover"] > div, ul[role="listbox"] {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1px solid #cbd5e1 !important;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
-        }
-        li[role="option"] {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-        }
-        li[role="option"]:hover, li[role="option"][aria-selected="true"] {
-            background-color: #e0f2fe !important;
-            color: #0369a1 !important;
-        }
-
-        /* Dataframes Invert Fix for Light Theme */
-        [data-testid="stDataFrame"], .stDataFrame {
-            filter: invert(1) hue-rotate(180deg) !important;
-            border-radius: 12px !important;
-            border: 1px solid #cbd5e1 !important;
-            overflow: hidden !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-        }
-
-        /* Download Button Fix for Light Theme */
-        .stDownloadButton button, button[kind="primary"], button[kind="secondary"] {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
-            color: #ffffff !important;
-            font-weight: 700 !important;
-            border: 1px solid rgba(2, 132, 199, 0.4) !important;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25) !important;
-            border-radius: 8px !important;
-            transition: all 0.2s ease !important;
-        }
-        .stDownloadButton button:hover, button[kind="primary"]:hover, button[kind="secondary"]:hover {
-            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
-            color: #ffffff !important;
-            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35) !important;
-            transform: translateY(-1px) !important;
-        }
-        .stDownloadButton button p, .stDownloadButton button span, .stDownloadButton button div {
-            color: #ffffff !important;
-        }
-
-        /* Code Pills Fix for Light Theme */
-        code, pre, .stMarkdown code {
-            background-color: #e0f2fe !important;
-            color: #0369a1 !important;
-            border: 1px solid #bae6fd !important;
-            padding: 2px 7px !important;
-            border-radius: 6px !important;
-            font-weight: 600 !important;
-        }
-
-        /* Inputs & Textareas Fix for Light Theme */
-        .stTextInput input, .stTextArea textarea {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1px solid #cbd5e1 !important;
-        }
-        .stTextInput input:focus, .stTextArea textarea:focus {
-            border-color: #0284c7 !important;
-            box-shadow: 0 0 0 1px #0284c7 !important;
-        }
-
-        /* Alerts & Info Callouts in Light Theme */
-        [data-testid="stAlert"] {
-            background-color: rgba(240, 249, 255, 0.95) !important;
-            border: 1px solid rgba(2, 132, 199, 0.25) !important;
-            border-left: 4px solid #0284c7 !important;
-            color: #0c4a6e !important;
-        }
-        [data-testid="stAlert"] * {
-            color: #0c4a6e !important;
-        }
-        [data-testid="stAlert"] svg {
-            fill: #0284c7 !important;
-            color: #0284c7 !important;
-        }
-        div.stSuccess {
-            background-color: #f0fdf4 !important;
-            border: 1px solid #bbf7d0 !important;
-            border-left: 4px solid #16a34a !important;
-            color: #14532d !important;
-        }
-        div.stSuccess * {
-            color: #14532d !important;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-flask_stroke = "url(#goldFlaskGrad)" if is_dark else "#0284c7"
+flask_stroke = "url(#goldFlaskGrad)"
 st.markdown(f"""
 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="{flask_stroke}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -817,7 +496,7 @@ st.markdown(f"""
         <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
         <path d="M5.52 16h12.96"></path>
     </svg>
-    <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em;">Molecular Solubility Predictor &amp; Chemical Translator</h1>
+    <h1 style="font-family: 'Switzer', sans-serif; margin: 0; font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em;">Molecular Solubility Predictor &amp; Chemical Translator</h1>
 </div>
 """, unsafe_allow_html=True)
 st.markdown("""
@@ -977,44 +656,24 @@ else:
                         if r["Formula"]:
                             st.caption(f"Formula: `{r['Formula']}`")
                         st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
-                        if is_dark:
-                            st.markdown(f"""
-                            <div style="
-                                background-color: #0c0c0e;
-                                border: 1px solid rgba(212, 175, 55, 0.3);
-                                border-left: 3px solid #D4AF37;
-                                border-radius: 8px;
-                                padding: 12px 14px;
-                                margin-top: 10px;
-                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-                            ">
-                                <div style="color: #DFB15B; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">
-                                    {r['Classification']}
-                                </div>
-                                <div style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.45;">
-                                    {r['Explanation']}
-                                </div>
+                        st.markdown(f"""
+                        <div style="
+                            background-color: #0c0c0e;
+                            border: 1px solid rgba(212, 175, 55, 0.3);
+                            border-left: 3px solid #D4AF37;
+                            border-radius: 8px;
+                            padding: 12px 14px;
+                            margin-top: 10px;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+                        ">
+                            <div style="color: #DFB15B; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">
+                                {r['Classification']}
                             </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown(f"""
-                            <div style="
-                                background-color: #f0f9ff;
-                                border: 1px solid rgba(2, 132, 199, 0.25);
-                                border-left: 3px solid #0284c7;
-                                border-radius: 8px;
-                                padding: 12px 14px;
-                                margin-top: 10px;
-                                box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
-                            ">
-                                <div style="color: #0369a1; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">
-                                    {r['Classification']}
-                                </div>
-                                <div style="color: #0c4a6e; font-size: 0.85rem; line-height: 1.45;">
-                                    {r['Explanation']}
-                                </div>
+                            <div style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.45;">
+                                {r['Explanation']}
                             </div>
-                            """, unsafe_allow_html=True)
+                        </div>
+                        """, unsafe_allow_html=True)
 
             st.markdown("---")
             st.subheader("Solubility Predictions Summary")
@@ -1085,40 +744,22 @@ else:
             ])
             st.dataframe(desc_table, use_container_width=True, hide_index=True)
 
-            if is_dark:
-                st.markdown(f"""
-                <div style="
-                    background-color: #0c0c0e;
-                    border: 1px solid rgba(212, 175, 55, 0.35);
-                    border-left: 4px solid #D4AF37;
-                    border-radius: 8px;
-                    padding: 14px 16px;
-                    margin-top: 14px;
-                    font-size: 0.95rem;
-                ">
-                    <strong style="color: #DFB15B;">Predicted Aqueous Solubility:</strong> 
-                    <span style="color: #F8ECC2; font-weight: 700;">{s_pred:.3f} LogS (mol/L)</span> — 
-                    <span style="color: #DFB15B; font-weight: 600;">{sample['Classification']}</span> 
-                    <span style="color: #cbd5e1;">({sample['Explanation']})</span>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown(f"""
-                <div style="
-                    background-color: #f0fdf4;
-                    border: 1px solid #bbf7d0;
-                    border-left: 4px solid #16a34a;
-                    border-radius: 8px;
-                    padding: 14px 16px;
-                    margin-top: 14px;
-                    font-size: 0.95rem;
-                ">
-                    <strong style="color: #14532d;">Predicted Aqueous Solubility:</strong> 
-                    <span style="color: #15803d; font-weight: 700;">{s_pred:.3f} LogS (mol/L)</span> — 
-                    <span style="color: #15803d; font-weight: 600;">{sample['Classification']}</span> 
-                    <span style="color: #166534;">({sample['Explanation']})</span>
-                </div>
-                """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style="
+                background-color: #0c0c0e;
+                border: 1px solid rgba(212, 175, 55, 0.35);
+                border-left: 4px solid #D4AF37;
+                border-radius: 8px;
+                padding: 14px 16px;
+                margin-top: 14px;
+                font-size: 0.95rem;
+            ">
+                <strong style="color: #DFB15B;">Predicted Aqueous Solubility:</strong> 
+                <span style="color: #F8ECC2; font-weight: 700;">{s_pred:.3f} LogS (mol/L)</span> — 
+                <span style="color: #DFB15B; font-weight: 600;">{sample['Classification']}</span> 
+                <span style="color: #cbd5e1;">({sample['Explanation']})</span>
+            </div>
+            """, unsafe_allow_html=True)
 
         with tab3:
             st.subheader("◈ Model Accuracy Benchmark: 77.00% Baseline vs. 91.52% CV (99.93% Benchmark)")
