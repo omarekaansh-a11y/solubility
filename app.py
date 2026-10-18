@@ -357,8 +357,8 @@ if is_dark:
             margin-top: 0px !important;
             margin-bottom: 14px !important;
             border-radius: 9999px !important;
-            background: #111111 !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            background: #0d0d0d !important;
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
             padding: 2px !important;
             width: fit-content !important;
         }
@@ -373,19 +373,21 @@ if is_dark:
             color: #a1a1aa !important;
         }
         [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button[aria-checked="true"] {
-            background: #262626 !important;
-            color: #ffffff !important;
+            background: linear-gradient(135deg, #F8ECC2 0%, #D4AF37 50%, #996515 100%) !important;
+            color: #050505 !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 12px rgba(212, 175, 55, 0.3) !important;
         }
 
-        /* Dark Theme Overrides with Pure Black Moving Blueprint 3D Background */
+        /* Dark Theme Overrides with Pure Black & Authentic Luxury Metallic Gold */
         .stApp {
             background-color: #000000 !important;
             background-image: 
-                radial-gradient(ellipse at 50% 25%, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.98) 75%),
-                linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
-                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px) !important;
+                radial-gradient(ellipse at 50% 18%, rgba(212, 175, 55, 0.07) 0%, rgba(0, 0, 0, 0.98) 75%),
+                linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(rgba(212, 175, 55, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.035) 1px, transparent 1px) !important;
             background-size: 100% 100%, 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
             background-position: 0 0, 0 0, 0 0, 0 0, 0 0 !important;
             animation: blueprint-drift 40s linear infinite !important;
@@ -404,32 +406,90 @@ if is_dark:
         [data-testid="stSidebar"] {
             background-color: #000000 !important;
             backdrop-filter: blur(16px) !important;
-            border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-right: 1px solid rgba(212, 175, 55, 0.2) !important;
         }
         .mol-card {
             background: #09090b !important;
             backdrop-filter: blur(14px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(248, 236, 194, 0.12) !important;
             border-radius: 14px;
             padding: 16px;
             margin-bottom: 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .mol-card:hover {
+            border-color: rgba(248, 236, 194, 0.6) !important;
+            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.95), 0 0 20px -2px rgba(212, 175, 55, 0.25) !important;
         }
         [data-testid="stMetricValue"] {
-            color: #ffffff !important;
+            color: #DFB15B !important;
+            text-shadow: 0 0 14px rgba(212, 175, 55, 0.25) !important;
         }
         [data-testid="stMetricLabel"] {
+            color: #d4d4d8 !important;
+        }
+
+        /* Tabs Luxury Gold Highlight */
+        button[data-baseweb="tab"] {
             color: #a1a1aa !important;
+            font-weight: 500 !important;
         }
+        button[data-baseweb="tab"]:hover {
+            color: #F8ECC2 !important;
+        }
+        button[data-baseweb="tab"][aria-selected="true"] {
+            color: #DFB15B !important;
+            border-bottom: 2px solid #D4AF37 !important;
+        }
+        button[data-baseweb="tab"][aria-selected="true"] p, 
+        button[data-baseweb="tab"][aria-selected="true"] div {
+            color: #DFB15B !important;
+            font-weight: 600 !important;
+        }
+
+        /* Alert / Callout Luxury Gold Accent */
         [data-testid="stAlert"] {
-            background-color: #09090b !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            color: #f1f5f9 !important;
+            background-color: #080806 !important;
+            border: 1px solid rgba(212, 175, 55, 0.32) !important;
+            border-left: 4px solid #D4AF37 !important;
+            color: #F8ECC2 !important;
         }
+        [data-testid="stAlert"] svg {
+            fill: #D4AF37 !important;
+            color: #D4AF37 !important;
+        }
+
+        /* Inputs & Textareas */
         .stTextInput input, .stTextArea textarea, [data-baseweb="select"] {
             background-color: #09090b !important;
-            border-color: rgba(255, 255, 255, 0.18) !important;
+            border-color: rgba(212, 175, 55, 0.28) !important;
             color: #f8fafc !important;
+        }
+        .stTextInput input:focus, .stTextArea textarea:focus {
+            border-color: #D4AF37 !important;
+            box-shadow: 0 0 0 1px #D4AF37 !important;
+        }
+
+        /* Buttons & Actions in Pure Metallic Gold */
+        .stDownloadButton button, button[kind="primary"] {
+            background: linear-gradient(135deg, #F8ECC2 0%, #D4AF37 50%, #996515 100%) !important;
+            color: #050505 !important;
+            font-weight: 700 !important;
+            border: 1px solid rgba(248, 236, 194, 0.6) !important;
+            box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35) !important;
+            border-radius: 8px !important;
+            transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+        }
+        .stDownloadButton button:hover, button[kind="primary"]:hover {
+            background: linear-gradient(135deg, #FFF6D6 0%, #E5C158 50%, #A27B20 100%) !important;
+            color: #000000 !important;
+            box-shadow: 0 6px 22px rgba(212, 175, 55, 0.55) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        a, .stMarkdown a {
+            color: #DFB15B !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -564,7 +624,14 @@ else:
 
 st.markdown("""
 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="url(#goldFlaskGrad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <defs>
+            <linearGradient id="goldFlaskGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F8ECC2" />
+                <stop offset="50%" stop-color="#D4AF37" />
+                <stop offset="100%" stop-color="#996515" />
+            </linearGradient>
+        </defs>
         <path d="M10 2v7.31"></path>
         <path d="M14 9.3V1.99"></path>
         <path d="M8.5 2h7"></path>
