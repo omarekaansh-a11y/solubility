@@ -266,6 +266,17 @@ is_dark = (theme_choice == "🌙")
 if is_dark:
     st.markdown("""
     <style>
+        /* Remove Streamlit branding, menu, and footers */
+        #MainMenu {visibility: hidden !important; display: none !important;}
+        footer {visibility: hidden !important; display: none !important;}
+        header {visibility: hidden !important; display: none !important;}
+        .stDeployButton {display: none !important;}
+        [data-testid="stDecoration"] {display: none !important;}
+        [data-testid="stStatusWidget"] {display: none !important;}
+        [data-testid="stToolbar"] {display: none !important;}
+        .viewerBadge_container__1QSob {display: none !important;}
+        [data-testid="manage-app-button"] {display: none !important;}
+
         /* Floating Pill Button in Top Right */
         [data-testid="stSegmentedControl"] {
             position: fixed !important;
@@ -313,6 +324,17 @@ if is_dark:
 else:
     st.markdown("""
     <style>
+        /* Remove Streamlit branding, menu, and footers */
+        #MainMenu {visibility: hidden !important; display: none !important;}
+        footer {visibility: hidden !important; display: none !important;}
+        header {visibility: hidden !important; display: none !important;}
+        .stDeployButton {display: none !important;}
+        [data-testid="stDecoration"] {display: none !important;}
+        [data-testid="stStatusWidget"] {display: none !important;}
+        [data-testid="stToolbar"] {display: none !important;}
+        .viewerBadge_container__1QSob {display: none !important;}
+        [data-testid="manage-app-button"] {display: none !important;}
+
         /* Floating Pill Button in Top Right */
         [data-testid="stSegmentedControl"] {
             position: fixed !important;
@@ -590,4 +612,4 @@ else:
             st.write(f"**Model Intercept:** `{load_model.intercept_:.4f}`")
 
 st.markdown("---")
-st.caption("Bioinformatics Web App | Molecular Solubility Predictor with Chemical Translator | Built with Streamlit & RDKit")
+st.caption("Bioinformatics Web Application | Molecular Solubility Predictor & Chemical Translator | Powered by Machine Learning & RDKit")
