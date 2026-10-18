@@ -480,15 +480,41 @@ css_styles = """
             min-width: 320px !important;
             max-width: 320px !important;
             width: 320px !important;
+            flex: 0 0 320px !important;
+            resize: none !important;
             transform: none !important;
             transition: none !important;
             margin-left: 0 !important;
+            user-select: none !important;
         }
         section[data-testid="stSidebar"][aria-expanded="false"] {
             margin-left: 0 !important;
             transform: none !important;
             display: block !important;
             visibility: visible !important;
+        }
+        /* Completely disable sidebar resize handles & col-resize cursor */
+        [data-testid="stSidebarDragHandle"],
+        [data-testid="stSidebarResizer"],
+        [data-testid="stSidebar"] [data-testid*="drag"],
+        [data-testid="stSidebar"] [data-testid*="Drag"],
+        div[data-testid*="Resize"],
+        div[data-testid*="resize"],
+        div[role="separator"],
+        div[class*="resize-handle"],
+        div[class*="ResizeHandle"],
+        div[class*="drag-handle"],
+        div[class*="DragHandle"] {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            cursor: default !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        section[data-testid="stSidebar"] input,
+        section[data-testid="stSidebar"] textarea {
+            user-select: text !important;
         }
         .mol-card {
             background: #09090b !important;
@@ -551,6 +577,19 @@ css_styles = """
         .stTextInput input:focus, .stTextArea textarea:focus {
             border-color: #D4AF37 !important;
             box-shadow: 0 0 0 1px #D4AF37 !important;
+        }
+
+        /* Unadjustable & Auto-Adapting Molecule Input Textarea */
+        .stTextArea,
+        .stTextArea textarea,
+        textarea {
+            resize: none !important;
+            field-sizing: content !important;
+            box-sizing: border-box !important;
+            overflow-y: hidden !important;
+        }
+        .stTextArea textarea::-webkit-resizer {
+            display: none !important;
         }
 
         /* Buttons & Actions in Pure Metallic Gold */
@@ -621,10 +660,14 @@ molecules_to_process = []
 if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
     st.sidebar.markdown("**Translate Common Names into SMILES:**")
     st.sidebar.caption("Type any chemical or drug name (one per line):")
+    current_names = st.session_state.get("name_input_area", "glucose\ncaffeine\naspirin")
+    line_count = max(len([l for l in current_names.split('\n') if l.strip()]), 2)
+    dynamic_name_height = max(80, min(line_count * 25 + 32, 450))
     name_input = st.sidebar.text_area(
         "Molecules:",
         value="glucose\ncaffeine\naspirin",
-        height=140
+        height=dynamic_name_height,
+        key="name_input_area"
     )
     raw_names = [n.strip() for n in name_input.split('\n') if n.strip()]
 
@@ -649,10 +692,14 @@ if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
 
 elif input_mode == "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
     st.sidebar.markdown("**Direct SMILES Input:**")
+    current_smiles = st.session_state.get("smiles_input_area", "NCCCC\nCCC\nCN")
+    line_count_smi = max(len([l for l in current_smiles.split('\n') if l.strip()]), 2)
+    dynamic_smiles_height = max(80, min(line_count_smi * 25 + 32, 450))
     smiles_input = st.sidebar.text_area(
         "SMILES strings (one per line):",
         value="NCCCC\nCCC\nCN",
-        height=140
+        height=dynamic_smiles_height,
+        key="smiles_input_area"
     )
     raw_smiles = [s.strip() for s in smiles_input.split('\n') if s.strip()]
     for i, smi in enumerate(raw_smiles):
