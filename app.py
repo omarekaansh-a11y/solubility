@@ -16,7 +16,8 @@ from rdkit.Chem import Descriptors, Draw, AllChem
 st.set_page_config(
     page_title="Molecular Solubility Predictor",
     page_icon="⌬",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 #####################################
@@ -371,12 +372,47 @@ css_styles = """
         padding-right: 2rem !important;
         padding-top: 1.5rem !important;
     }
+    /* Permanent Uncollapsible Sidebar */
+    [data-testid="collapsedControl"],
+    button[data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarHeader"] button,
+    section[data-testid="stSidebar"] button[kind="header"],
+    section[data-testid="stSidebar"] button[aria-label="Close"],
+    header [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Universal Anti-Scroll for 2D Images, Columns & Containers */
     [data-testid="stHorizontalBlock"] {
         max-width: 100% !important;
+        overflow: hidden !important;
         overflow-x: hidden !important;
+        overflow-y: hidden !important;
     }
-    [data-testid="column"] {
+    [data-testid="column"],
+    [data-testid="column"] > div {
         min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        overflow-x: hidden !important;
+        overflow-y: hidden !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    [data-testid="column"]::-webkit-scrollbar,
+    [data-testid="stImage"]::-webkit-scrollbar,
+    [data-testid="stHorizontalBlock"]::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+    [data-testid="stImage"],
+    [data-testid="stImage"] > div {
+        overflow: hidden !important;
         max-width: 100% !important;
     }
     table, .stTable {
@@ -391,6 +427,15 @@ css_styles = """
     img {
         max-width: 100% !important;
         height: auto !important;
+        display: block !important;
+    }
+
+    /* Top Logo Banner Sleek Proportion */
+    [data-testid="stAppViewContainer"] > section.main img:first-of-type,
+    [data-testid="stImage"]:first-of-type img {
+        max-height: 220px !important;
+        object-fit: cover !important;
+        border-radius: 12px !important;
     }
 
     /* Remove Streamlit branding, menu, and footers */
@@ -427,10 +472,23 @@ css_styles = """
             }
         }
 
-        [data-testid="stSidebar"] {
+        [data-testid="stSidebar"],
+        section[data-testid="stSidebar"] {
             background-color: #000000 !important;
             backdrop-filter: blur(16px) !important;
             border-right: 1px solid rgba(212, 175, 55, 0.2) !important;
+            min-width: 320px !important;
+            max-width: 320px !important;
+            width: 320px !important;
+            transform: none !important;
+            transition: none !important;
+            margin-left: 0 !important;
+        }
+        section[data-testid="stSidebar"][aria-expanded="false"] {
+            margin-left: 0 !important;
+            transform: none !important;
+            display: block !important;
+            visibility: visible !important;
         }
         .mol-card {
             background: #09090b !important;
@@ -690,7 +748,7 @@ else:
                 cols = st.columns(NUM_COLS)
                 for col_idx, r in enumerate(row_items):
                     with cols[col_idx]:
-                        img = Draw.MolToImage(r["Mol"], size=(300, 240))
+                        img = Draw.MolToImage(r["Mol"], size=(280, 200))
                         st.image(img, use_container_width=True)
                         st.markdown(f"### {r['DisplayName']}")
                         if r["Formula"]:
@@ -703,7 +761,7 @@ else:
                             border-left: 3px solid #D4AF37;
                             border-radius: 8px;
                             padding: 12px 14px;
-                            margin-top: 10px;
+                            margin-top: 8px;
                             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
                         ">
                             <div style="color: #DFB15B; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">
@@ -724,16 +782,10 @@ else:
                 "Predicted LogS (mol/L)": r["PredictedLogS"],
                 "Solubility Class": r["Classification"],
                 "MolLogP (Lipophilicity)": round(r["MolLogP"], 2),
-                "MolWt (g/mol)": round(r["MolWt"], 2),
-                "Rotatable Bonds": r["NumRotatableBonds"],
-                "Aromatic Ratio": round(r["AromaticProportion"], 2),
-                "TPSA (Å²)": round(r["TPSA"], 1),
-                "H-Donors": r["NumHDonors"],
-                "H-Acceptors": r["NumHAcceptors"],
-                "Canonical SMILES": r["SMILES"]
+                "MolWt (g/mol)": round(r["MolWt"], 2)
             } for r in records])
 
-            st.dataframe(display_df, use_container_width=True)
+            st.dataframe(display_df, use_container_width=True, hide_index=True)
 
         with tab2:
             st.subheader("Model Architecture & Feature Extraction")
