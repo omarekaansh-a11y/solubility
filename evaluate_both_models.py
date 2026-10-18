@@ -105,8 +105,8 @@ ax2.plot([-12, 2], [-12, 2], color="#ef4444", linestyle="--", linewidth=2.2, lab
 ax2.set_xlim(-12, 2.5)
 ax2.set_ylim(-12, 2.5)
 ax2.set_xlabel("Experimental Lab Measured LogS (mol/L)", fontsize=11, fontweight="bold")
-ax2.set_ylabel("Upgraded Predicted LogS (mol/L)", fontsize=11, fontweight="bold")
-ax2.set_title(f"Upgraded Extra Trees Model (91.52% CV / 99.93% Benchmark)\nExtra Trees + Morgan FP | 5-Fold CV $R^2 = 91.52\\%$ | Benchmark $R^2 = {r2_v2*100:.2f}\\%$", fontsize=12, fontweight="bold", pad=10)
+ax2.set_ylabel("Our Model Predicted LogS (mol/L)", fontsize=11, fontweight="bold")
+ax2.set_title(f"Our Model (91.52% CV / 99.93% Benchmark)\nExtra Trees + Morgan FP | 5-Fold CV $R^2 = 91.52\\%$ | Benchmark $R^2 = {r2_v2*100:.2f}\\%$", fontsize=12, fontweight="bold", pad=10)
 ax2.legend(loc="upper left", frameon=True, facecolor="#f8fafc", edgecolor="#cbd5e1", fontsize=10)
 ax2.grid(True, linestyle=":", alpha=0.6)
 

@@ -372,18 +372,41 @@ if is_dark:
             border: none !important;
         }
 
-        /* Dark Theme Overrides */
+        /* Dark Theme Overrides with Moving Blueprint 3D Background */
         .stApp {
-            background-color: #0e1117 !important;
+            background-color: #0b0f17 !important;
+            background-image: 
+                radial-gradient(ellipse at 50% 25%, rgba(14, 165, 233, 0.15) 0%, rgba(11, 15, 23, 0.94) 75%),
+                linear-gradient(rgba(14, 165, 233, 0.13) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.13) 1px, transparent 1px),
+                linear-gradient(rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px) !important;
+            background-size: 100% 100%, 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
+            background-position: 0 0, 0 0, 0 0, 0 0, 0 0 !important;
+            animation: blueprint-drift 40s linear infinite !important;
             color: #f1f5f9 !important;
         }
+
+        @keyframes blueprint-drift {
+            0% {
+                background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+            }
+            100% {
+                background-position: 0 0, 100px 100px, 100px 100px, 100px 100px, 100px 100px;
+            }
+        }
+
         [data-testid="stSidebar"] {
-            background-color: #161b22 !important;
+            background-color: rgba(15, 23, 42, 0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            border-right: 1px solid rgba(14, 165, 233, 0.15) !important;
         }
         .mol-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
+            background: rgba(17, 24, 39, 0.85) !important;
+            backdrop-filter: blur(14px) !important;
+            border: 1px solid rgba(14, 165, 233, 0.22) !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+            border-radius: 14px;
             padding: 16px;
             margin-bottom: 12px;
         }
@@ -474,21 +497,44 @@ else:
             border: none !important;
         }
 
-        /* Light Theme Overrides */
+        /* Light Theme Overrides with Moving Blueprint 3D Background */
         .stApp {
-            background-color: #ffffff !important;
+            background-color: #f0f7ff !important;
+            background-image: 
+                radial-gradient(ellipse at 50% 25%, rgba(2, 132, 199, 0.08) 0%, rgba(240, 247, 255, 0.95) 75%),
+                linear-gradient(rgba(2, 132, 199, 0.14) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.14) 1px, transparent 1px),
+                linear-gradient(rgba(2, 132, 199, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(2, 132, 199, 0.05) 1px, transparent 1px) !important;
+            background-size: 100% 100%, 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
+            background-position: 0 0, 0 0, 0 0, 0 0, 0 0 !important;
+            animation: blueprint-drift-light 40s linear infinite !important;
             color: #0f172a !important;
         }
+
+        @keyframes blueprint-drift-light {
+            0% {
+                background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+            }
+            100% {
+                background-position: 0 0, 100px 100px, 100px 100px, 100px 100px, 100px 100px;
+            }
+        }
+
         [data-testid="stSidebar"] {
-            background-color: #f8fafc !important;
+            background-color: rgba(248, 250, 252, 0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            border-right: 1px solid rgba(2, 132, 199, 0.15) !important;
         }
         .stMarkdown, p, span, label, h1, h2, h3, h4 {
             color: #0f172a !important;
         }
         .mol-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(14px) !important;
+            border: 1px solid rgba(2, 132, 199, 0.18) !important;
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+            border-radius: 14px;
             padding: 16px;
             margin-bottom: 12px;
         }
@@ -745,7 +791,7 @@ else:
             st.markdown("""
             Direct side-by-side parity comparison across the complete **Delaney ESOL benchmark dataset (1,144 chemical molecules)** with experimental lab-measured aqueous solubility values:
             * **Left (77.00% Baseline)**: Classic Delaney 4-descriptor linear regression with noticeable scatter and error spread ($R^2 = 77.00\%$, $\\text{RMSE} = 1.005$).
-            * **Right (Upgraded Extra Trees)**: 524 structural features & circular Morgan fingerprints showing tight parity convergence (5-Fold CV $R^2 = 91.52\\%$, Benchmark $R^2 = 99.93\\%$, $\\text{RMSE} = 0.056$).
+            * **Right (Our Model)**: 524 structural features & circular Morgan fingerprints showing tight parity convergence (5-Fold CV $R^2 = 91.52\\%$, Benchmark $R^2 = 99.93\\%$, $\\text{RMSE} = 0.056$).
             """)
 
             col_comp_1, col_comp_2 = st.columns(2)
@@ -755,7 +801,7 @@ else:
                 m1.metric("Linear $R^2$ Score", "77.00%", "Delaney linear fit")
                 m2.metric("RMSE Error", "1.005", "log units (mol/L)")
             with col_comp_2:
-                st.markdown("##### 🚀 Upgraded Model (91.52% CV / 99.93% Benchmark)")
+                st.markdown("##### 🚀 Our Model (91.52% CV / 99.93% Benchmark)")
                 m3, m4 = st.columns(2)
                 m3.metric("5-Fold CV $R^2$", "91.52%", "+14.52% over baseline")
                 m4.metric("RMSE Error", "0.056", "-94.4% error reduction")
@@ -764,7 +810,7 @@ else:
             if os.path.exists(plot_path):
                 st.image(
                     plot_path,
-                    caption="Delaney Benchmark (1,144 Compounds): 77.00% Baseline Linear Model (Left) vs. 91.52% CV / 99.93% Benchmark Model (Right)",
+                    caption="Delaney Benchmark (1,144 Compounds): 77.00% Baseline Linear Model (Left) vs. Our Model (Right)",
                     use_container_width=True
                 )
 
