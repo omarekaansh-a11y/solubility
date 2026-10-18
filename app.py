@@ -254,8 +254,75 @@ with open(model_path, 'rb') as f:
     load_model = pickle.load(f)
 
 ######################
-# Sidebar Inputs
+# Sidebar: Theme & Inputs
 ######################
+st.sidebar.markdown("### 🎨 Display Theme")
+theme_choice = st.sidebar.radio(
+    "Select Mode",
+    options=["🌙 Dark Mode", "☀️ Light Mode"],
+    index=0,  # Dark Mode is default!
+    horizontal=True,
+    label_visibility="collapsed"
+)
+is_dark = (theme_choice == "🌙 Dark Mode")
+
+if is_dark:
+    st.markdown("""
+    <style>
+        /* Dark Theme Overrides */
+        .stApp {
+            background-color: #0e1117 !important;
+            color: #f1f5f9 !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #161b22 !important;
+        }
+        .mol-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        [data-testid="stMetricValue"] {
+            color: #60a5fa !important;
+        }
+        [data-testid="stMetricLabel"] {
+            color: #94a3b8 !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <style>
+        /* Light Theme Overrides */
+        .stApp {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #f8fafc !important;
+        }
+        .stMarkdown, p, span, label, h1, h2, h3, h4 {
+            color: #0f172a !important;
+        }
+        .mol-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        [data-testid="stMetricValue"] {
+            color: #2563eb !important;
+        }
+        [data-testid="stMetricLabel"] {
+            color: #64748b !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+st.sidebar.markdown("---")
 st.sidebar.header("Input Method")
 
 input_mode = st.sidebar.radio(
@@ -363,16 +430,14 @@ if input_mode == "🔤 By Molecule Name (e.g. Glucose, Aspirin)" and molecules_t
                     "Input Name": m["name"],
                     "Molecular Formula": m.get("formula", "N/A"),
                     "Generated SMILES": m["smiles"],
-                    "IUPAC Name": m.get("iupac", "N/A"),
-                    "Lookup Source": m.get("source", "Registry")
+                    "IUPAC Name": m.get("iupac", "N/A")
                 })
             else:
                 trans_rows.append({
                     "Input Name": m["name"],
                     "Molecular Formula": "Not found",
                     "Generated SMILES": "⚠️ Could not resolve name to structure",
-                    "IUPAC Name": "N/A",
-                    "Lookup Source": "Failed"
+                    "IUPAC Name": "N/A"
                 })
         st.dataframe(pd.DataFrame(trans_rows), use_container_width=True)
 
