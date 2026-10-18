@@ -579,39 +579,6 @@ css_styles = """
             box-shadow: 0 0 0 1px #D4AF37 !important;
         }
 
-        /* Molecule Input Box: Exactly 3 rows tall; no scroll for <= 3 rows; scrollbar for > 3 rows */
-        .stTextArea,
-        .stTextArea textarea,
-        textarea {
-            resize: none !important;
-            box-sizing: border-box !important;
-            height: 96px !important;
-            min-height: 96px !important;
-            max-height: 96px !important;
-            line-height: 1.45 !important;
-            padding: 10px 12px !important;
-            font-size: 0.92rem !important;
-            overflow-y: auto !important;
-            scrollbar-width: thin !important;
-            scrollbar-color: #D4AF37 #09090b !important;
-        }
-        .stTextArea textarea::-webkit-resizer {
-            display: none !important;
-        }
-        .stTextArea textarea::-webkit-scrollbar {
-            width: 5px !important;
-        }
-        .stTextArea textarea::-webkit-scrollbar-track {
-            background: #09090b !important;
-            border-radius: 4px !important;
-        }
-        .stTextArea textarea::-webkit-scrollbar-thumb {
-            background: #D4AF37 !important;
-            border-radius: 4px !important;
-        }
-        .stTextArea textarea::-webkit-scrollbar-thumb:hover {
-            background: #F8ECC2 !important;
-        }
 
         /* Buttons & Actions in Pure Metallic Gold */
         .stDownloadButton button, button[kind="primary"] {
@@ -684,7 +651,7 @@ if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
     name_input = st.sidebar.text_area(
         "Molecules:",
         value="glucose\ncaffeine\naspirin",
-        height=96
+        height=140
     )
     raw_names = [n.strip() for n in name_input.split('\n') if n.strip()]
 
@@ -712,7 +679,7 @@ elif input_mode == "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
     smiles_input = st.sidebar.text_area(
         "SMILES strings (one per line):",
         value="NCCCC\nCCC\nCN",
-        height=96
+        height=140
     )
     raw_smiles = [s.strip() for s in smiles_input.split('\n') if s.strip()]
     for i, smi in enumerate(raw_smiles):
