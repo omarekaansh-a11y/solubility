@@ -14,7 +14,7 @@ from rdkit.Chem import Descriptors, Draw, AllChem
 # Set page configuration
 st.set_page_config(
     page_title="Molecular Solubility Predictor",
-    page_icon="🧪",
+    page_icon="⌬",
     layout="wide"
 )
 
@@ -232,27 +232,27 @@ def explain_solubility(logs):
     if logs > 0:
         return (
             "Highly Soluble (> 1 mol/L)",
-            "🟢 Dissolves very easily in water. Typical of polar molecules like simple sugars and low-chain alcohols."
+            "● Dissolves very easily in water. Typical of polar molecules like simple sugars and low-chain alcohols."
         )
     elif logs > -2:
         return (
             "Very Soluble (0.01 – 1 mol/L)",
-            "🟢 Readily dissolves in water with high solubility. Good bioavailability profile."
+            "● Readily dissolves in water with high solubility. Good bioavailability profile."
         )
     elif logs > -4:
         return (
             "Soluble (0.1 – 10 mmol/L)",
-            "🟡 Moderately soluble in water. Meets the typical threshold required for active oral drug candidates."
+            "● Moderately soluble in water. Meets the typical threshold required for active oral drug candidates."
         )
     elif logs > -6:
         return (
             "Moderately / Sparingly Soluble",
-            "🟠 Low aqueous solubility. Often requires dissolution enhancers, formulation aids, or salts."
+            "● Low aqueous solubility. Often requires dissolution enhancers, formulation aids, or salts."
         )
     else:
         return (
             "Poorly Soluble / Insoluble (< 1 µmol/L)",
-            "🔴 Extremely hydrophobic / lipophilic. Will not dissolve meaningfully in water (e.g. fats, waxes, cholesterol)."
+            "● Extremely hydrophobic / lipophilic. Will not dissolve meaningfully in water (e.g. fats, waxes, cholesterol)."
         )
 
 ######################
@@ -547,7 +547,18 @@ else:
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🧪 Molecular Solubility Predictor & Chemical Translator")
+st.markdown("""
+<div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 2v7.31"></path>
+        <path d="M14 9.3V1.99"></path>
+        <path d="M8.5 2h7"></path>
+        <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+        <path d="M5.52 16h12.96"></path>
+    </svg>
+    <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em;">Molecular Solubility Predictor &amp; Chemical Translator</h1>
+</div>
+""", unsafe_allow_html=True)
 st.markdown("""
 Predict the **Aqueous Solubility (LogS)** of molecules using Machine Learning! 
 You can type **everyday chemical names** (like *glucose*, *aspirin*, *caffeine*) or standard **SMILES** chemical codes.
@@ -561,15 +572,15 @@ st.sidebar.header("Input Method")
 input_mode = st.sidebar.radio(
     "How would you like to enter molecules?",
     [
-        "🔤 By Molecule Name (e.g. Glucose, Aspirin)",
-        "🧪 By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)",
-        "⚡ Quick Example Presets"
+        "By Molecule Name (e.g. Glucose, Aspirin)",
+        "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)",
+        "Quick Example Presets"
     ]
 )
 
 molecules_to_process = []
 
-if input_mode == "🔤 By Molecule Name (e.g. Glucose, Aspirin)":
+if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
     st.sidebar.markdown("**Translate Common Names into SMILES:**")
     st.sidebar.caption("Type any chemical or drug name (one per line):")
     name_input = st.sidebar.text_area(
@@ -598,7 +609,7 @@ if input_mode == "🔤 By Molecule Name (e.g. Glucose, Aspirin)":
                 "iupac": ""
             })
 
-elif input_mode == "🧪 By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
+elif input_mode == "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
     st.sidebar.markdown("**Direct SMILES Input:**")
     smiles_input = st.sidebar.text_area(
         "SMILES strings (one per line):",
@@ -657,16 +668,16 @@ valid_molecules = [m for m in molecules_to_process if m["smiles"] != "INVALID"]
 failed_names = [m["name"] for m in molecules_to_process if m["smiles"] == "INVALID"]
 
 if failed_names:
-    st.warning(f"⚠️ Could not resolve the following molecule(s): **{', '.join(failed_names)}**. Please check spelling or enter SMILES directly.")
+    st.warning(f"Could not resolve the following molecule(s): **{', '.join(failed_names)}**. Please check spelling or enter SMILES directly.")
 
 if not valid_molecules:
-    st.info("👈 Enter molecules in the sidebar to start predicting.")
+    st.info("Enter molecules in the sidebar to start predicting.")
 else:
     with st.spinner("Extracting structural features and predicting aqueous solubility..."):
         records, invalid_smiles = generate_descriptors(valid_molecules)
 
     if invalid_smiles:
-        st.warning(f"⚠️ Invalid chemical SMILES encountered: {', '.join(invalid_smiles)}")
+        st.warning(f"Invalid chemical SMILES encountered: {', '.join(invalid_smiles)}")
 
     if records:
         # High-Accuracy Prediction Pipeline (524 features: 12 descriptors + 512 Morgan bits)
@@ -682,14 +693,14 @@ else:
 
         # Display results in 3 tabs with 2D structures & summary table combined in Tab 1
         tab1, tab2, tab3 = st.tabs([
-            "🧬 2D Structures & Predictions Summary",
-            "📐 Model Architecture & Chemical Descriptors",
-            "🎯 Model Accuracy Benchmark (1,144 Compounds)"
+            "⌬ 2D Structures & Predictions Summary",
+            "☷ Model Architecture & Chemical Descriptors",
+            "◈ Model Accuracy Benchmark (1,144 Compounds)"
         ])
 
         with tab1:
             st.subheader("2D Chemical Structures & Solubility Assessment")
-            st.caption("⚡ Extra Trees Model (524 Features & Morgan ECFP4 Fingerprints | 5-Fold CV R² = 91.52% | Benchmark R² = 99.93%)")
+            st.caption("⌬ Extra Trees Model (524 Features & Morgan ECFP4 Fingerprints | 5-Fold CV R² = 91.52% | Benchmark R² = 99.93%)")
 
             # Always use a fixed 3-column grid layout so that 1, 2, or 3 molecules
             # stay the exact same consistent 1/3-width size and do not stretch!
@@ -708,7 +719,7 @@ else:
                         st.info(f"**{r['Classification']}**\n\n{r['Explanation']}")
 
             st.markdown("---")
-            st.subheader("📊 Solubility Predictions Summary")
+            st.subheader("Solubility Predictions Summary")
 
             display_df = pd.DataFrame([{
                 "Compound": r["DisplayName"],
@@ -729,7 +740,7 @@ else:
 
             csv = display_df.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Download Results as CSV",
+                label="↓ Download Results as CSV",
                 data=csv,
                 file_name="solubility_predictions.csv",
                 mime="text/csv"
@@ -744,7 +755,7 @@ else:
             """)
 
             st.markdown("---")
-            st.subheader("🔬 Extracted Molecular Descriptors")
+            st.subheader("◈ Extracted Molecular Descriptors")
 
             if len(records) > 1:
                 sample_name = st.selectbox(
@@ -784,10 +795,10 @@ else:
             ])
             st.dataframe(desc_table, use_container_width=True, hide_index=True)
 
-            st.success(f"🎯 **Predicted Aqueous Solubility:** **{s_pred:.3f} LogS (mol/L)** — **{sample['Classification']}** ({sample['Explanation']})")
+            st.success(f"**Predicted Aqueous Solubility:** **{s_pred:.3f} LogS (mol/L)** — **{sample['Classification']}** ({sample['Explanation']})")
 
         with tab3:
-            st.subheader("🎯 Model Accuracy Benchmark: 77.00% Baseline vs. 91.52% CV (99.93% Benchmark)")
+            st.subheader("◈ Model Accuracy Benchmark: 77.00% Baseline vs. 91.52% CV (99.93% Benchmark)")
             st.markdown("""
             Direct side-by-side parity comparison across the complete **Delaney ESOL benchmark dataset (1,144 chemical molecules)** with experimental lab-measured aqueous solubility values:
             * **Left (77.00% Baseline)**: Classic Delaney 4-descriptor linear regression with noticeable scatter and error spread ($R^2 = 77.00\%$, $\\text{RMSE} = 1.005$).
@@ -796,12 +807,12 @@ else:
 
             col_comp_1, col_comp_2 = st.columns(2)
             with col_comp_1:
-                st.markdown("##### 📉 Baseline Model (77.00% Accuracy)")
+                st.markdown("##### ▾ Baseline Model (77.00% Accuracy)")
                 m1, m2 = st.columns(2)
                 m1.metric("Linear $R^2$ Score", "77.00%", "Delaney linear fit")
                 m2.metric("RMSE Error", "1.005", "log units (mol/L)")
             with col_comp_2:
-                st.markdown("##### 🚀 Our Model (91.52% CV / 99.93% Benchmark)")
+                st.markdown("##### ▴ Our Model (91.52% CV / 99.93% Benchmark)")
                 m3, m4 = st.columns(2)
                 m3.metric("5-Fold CV $R^2$", "91.52%", "+14.52% over baseline")
                 m4.metric("RMSE Error", "0.056", "-94.4% error reduction")
