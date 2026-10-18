@@ -238,12 +238,6 @@ if os.path.exists(logo_path):
     except TypeError:
         st.image(logo, use_column_width=True)
 
-st.title("🧪 Molecular Solubility Predictor & Chemical Translator")
-st.markdown("""
-Predict the **Aqueous Solubility (LogS)** of molecules using Machine Learning! 
-You can type **everyday chemical names** (like *glucose*, *aspirin*, *caffeine*) or standard **SMILES** chemical codes.
-""")
-
 # Load model
 model_path = os.path.join(script_dir, 'solubility_model.pkl')
 if not os.path.exists(model_path):
@@ -254,21 +248,45 @@ with open(model_path, 'rb') as f:
     load_model = pickle.load(f)
 
 ######################
-# Sidebar: Theme & Inputs
+# Top Right Pill Theme Switcher
 ######################
-st.sidebar.markdown("### 🎨 Display Theme")
-theme_choice = st.sidebar.radio(
-    "Select Mode",
-    options=["🌙 Dark Mode", "☀️ Light Mode"],
-    index=0,  # Dark Mode is default!
-    horizontal=True,
-    label_visibility="collapsed"
+# Container for the top-right floating pill
+theme_choice = st.segmented_control(
+    "Theme",
+    options=["🌙", "☀️"],
+    default="🌙",
+    label_visibility="collapsed",
+    key="top_right_theme_pill"
 )
-is_dark = (theme_choice == "🌙 Dark Mode")
+
+if not theme_choice:
+    theme_choice = "🌙"
+is_dark = (theme_choice == "🌙")
 
 if is_dark:
     st.markdown("""
     <style>
+        /* Floating Pill Button in Top Right */
+        [data-testid="stSegmentedControl"] {
+            position: fixed !important;
+            top: 14px !important;
+            right: 28px !important;
+            z-index: 999999 !important;
+            background: rgba(30, 41, 59, 0.85) !important;
+            backdrop-filter: blur(8px) !important;
+            border-radius: 9999px !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            padding: 2px !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35) !important;
+        }
+        [data-testid="stSegmentedControl"] button {
+            border-radius: 9999px !important;
+            padding: 2px 8px !important;
+            min-height: 24px !important;
+            height: 26px !important;
+            font-size: 13px !important;
+            border: none !important;
+        }
         /* Dark Theme Overrides */
         .stApp {
             background-color: #0e1117 !important;
@@ -295,6 +313,27 @@ if is_dark:
 else:
     st.markdown("""
     <style>
+        /* Floating Pill Button in Top Right */
+        [data-testid="stSegmentedControl"] {
+            position: fixed !important;
+            top: 14px !important;
+            right: 28px !important;
+            z-index: 999999 !important;
+            background: rgba(241, 245, 249, 0.9) !important;
+            backdrop-filter: blur(8px) !important;
+            border-radius: 9999px !important;
+            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            padding: 2px !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+        }
+        [data-testid="stSegmentedControl"] button {
+            border-radius: 9999px !important;
+            padding: 2px 8px !important;
+            min-height: 24px !important;
+            height: 26px !important;
+            font-size: 13px !important;
+            border: none !important;
+        }
         /* Light Theme Overrides */
         .stApp {
             background-color: #ffffff !important;
@@ -322,7 +361,15 @@ else:
     </style>
     """, unsafe_allow_html=True)
 
-st.sidebar.markdown("---")
+st.title("🧪 Molecular Solubility Predictor & Chemical Translator")
+st.markdown("""
+Predict the **Aqueous Solubility (LogS)** of molecules using Machine Learning! 
+You can type **everyday chemical names** (like *glucose*, *aspirin*, *caffeine*) or standard **SMILES** chemical codes.
+""")
+
+######################
+# Sidebar Inputs
+######################
 st.sidebar.header("Input Method")
 
 input_mode = st.sidebar.radio(
@@ -473,10 +520,24 @@ else:
             r["Classification"] = classification
             r["Explanation"] = explanation
 
-        # Display results in 3 tabs
-        tab1, tab2, tab3 = st.tabs(["📊 Prediction Overview", "🧬 2D Structures & Details", "📐 ESOL Model Mathematics"])
+        # Display results in 3 tabs with 2D structures as default
+        tab1, tab2, tab3 = st.tabs(["🧬 2D Structures & Details", "📊 Summary Table & Descriptors", "📐 ESOL Model Mathematics"])
 
         with tab1:
+            st.subheader("2D Chemical Structures & Solubility Assessment")
+            cols = st.columns(min(len(records), 3))
+            for i, r in enumerate(records):
+                col = cols[i % len(cols)]
+                with col:
+                    img = Draw.MolToImage(r["Mol"], size=(300, 240))
+                    st.image(img, use_container_width=True)
+                    st.markdown(f"### {r['DisplayName']}")
+                    if r["Formula"]:
+                        st.caption(f"Formula: `{r['Formula']}`")
+                    st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
+                    st.info(f"**{r['Classification']}**\n\n{r['Explanation']}")
+
+        with tab2:
             st.subheader("Solubility Predictions Summary")
 
             display_df = pd.DataFrame([{
@@ -500,20 +561,6 @@ else:
                 file_name="solubility_predictions.csv",
                 mime="text/csv"
             )
-
-        with tab2:
-            st.subheader("2D Chemical Structures & Solubility Assessment")
-            cols = st.columns(min(len(records), 3))
-            for i, r in enumerate(records):
-                col = cols[i % len(cols)]
-                with col:
-                    img = Draw.MolToImage(r["Mol"], size=(300, 240))
-                    st.image(img, use_container_width=True)
-                    st.markdown(f"### {r['DisplayName']}")
-                    if r["Formula"]:
-                        st.caption(f"Formula: `{r['Formula']}`")
-                    st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
-                    st.info(f"**{r['Classification']}**\n\n{r['Explanation']}")
 
         with tab3:
             st.subheader("How Delaney's ESOL Model Works")
