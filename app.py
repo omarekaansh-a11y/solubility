@@ -166,7 +166,7 @@ def generate_descriptors(smiles_entries):
     Compute molecular descriptors:
     1. Classic Delaney 4 descriptors (MolLogP, MolWt, NumRotatableBonds, AromaticProportion)
     2. Extended physicochemical descriptors (TPSA, H-Donors, H-Acceptors, MolMR, FractionCSP3, Rings)
-    3. Morgan Structural Fingerprint (radius=2, 512 bits) for High-Accuracy Extra Trees (92%+ R²)
+    3. Morgan Structural Fingerprint (radius=2, 512 bits) for Extra Trees (91.52% CV / 99.93% Benchmark R²)
     """
     valid_records = []
     invalid_entries = []
@@ -268,7 +268,7 @@ if os.path.exists(logo_path):
     except TypeError:
         st.image(logo, use_column_width=True)
 
-# Load High-Accuracy Molecular Solubility Model (Extra Trees + Morgan FP, 92%+ R² CV / 99.9% Benchmark)
+# Load Extra Trees Molecular Solubility Model (5-Fold CV R² = 91.52% / Benchmark R² = 99.93%)
 model_path = os.path.join(script_dir, 'solubility_model_v2_92plus.pkl')
 if not os.path.exists(model_path):
     st.error(f"High-Accuracy model file `solubility_model_v2_92plus.pkl` not found in `{script_dir}`.")
@@ -643,7 +643,7 @@ else:
 
         with tab1:
             st.subheader("2D Chemical Structures & Solubility Assessment")
-            st.caption("⚡ High-Accuracy Model (524 Structural Features & Morgan ECFP4 Fingerprints | R² ≥ 92.0% CV / 99.9% Benchmark)")
+            st.caption("⚡ Extra Trees Model (524 Features & Morgan ECFP4 Fingerprints | 5-Fold CV R² = 91.52% | Benchmark R² = 99.93%)")
 
             # Always use a fixed 3-column grid layout so that 1, 2, or 3 molecules
             # stay the exact same consistent 1/3-width size and do not stretch!
@@ -741,30 +741,30 @@ else:
             st.success(f"🎯 **Predicted Aqueous Solubility:** **{s_pred:.3f} LogS (mol/L)** — **{sample['Classification']}** ({sample['Explanation']})")
 
         with tab3:
-            st.subheader("🎯 Model Accuracy Benchmark: 77% Baseline vs. 90%+ Model")
+            st.subheader("🎯 Model Accuracy Benchmark: 77.00% Baseline vs. 91.52% CV (99.93% Benchmark)")
             st.markdown("""
             Direct side-by-side parity comparison across the complete **Delaney ESOL benchmark dataset (1,144 chemical molecules)** with experimental lab-measured aqueous solubility values:
-            * **Left (77% Baseline)**: Classic Delaney 4-descriptor linear regression with noticeable scatter and error spread ($R^2 = 77.0\%$, $\\text{RMSE} = 1.005$).
-            * **Right (90%+ Upgraded)**: High-accuracy Extra Trees model with 524 structural features & circular Morgan fingerprints showing tight parity convergence ($R^2 = 99.93\\%$, 5-Fold CV $R^2 = 91.52\\%$, $\\text{RMSE} = 0.056$).
+            * **Left (77.00% Baseline)**: Classic Delaney 4-descriptor linear regression with noticeable scatter and error spread ($R^2 = 77.00\%$, $\\text{RMSE} = 1.005$).
+            * **Right (Upgraded Extra Trees)**: 524 structural features & circular Morgan fingerprints showing tight parity convergence (5-Fold CV $R^2 = 91.52\\%$, Benchmark $R^2 = 99.93\\%$, $\\text{RMSE} = 0.056$).
             """)
 
             col_comp_1, col_comp_2 = st.columns(2)
             with col_comp_1:
-                st.markdown("##### 📉 Baseline Model (~77% Accuracy)")
+                st.markdown("##### 📉 Baseline Model (77.00% Accuracy)")
                 m1, m2 = st.columns(2)
                 m1.metric("Linear $R^2$ Score", "77.00%", "Delaney linear fit")
                 m2.metric("RMSE Error", "1.005", "log units (mol/L)")
             with col_comp_2:
-                st.markdown("##### 🚀 Upgraded Model (90%+ Accuracy)")
+                st.markdown("##### 🚀 Upgraded Model (91.52% CV / 99.93% Benchmark)")
                 m3, m4 = st.columns(2)
-                m3.metric("5-Fold CV $R^2$", "91.52%", "+14.5% over baseline")
+                m3.metric("5-Fold CV $R^2$", "91.52%", "+14.52% over baseline")
                 m4.metric("RMSE Error", "0.056", "-94.4% error reduction")
 
             plot_path = os.path.join(script_dir, "model_comparison_benchmark.png")
             if os.path.exists(plot_path):
                 st.image(
                     plot_path,
-                    caption="Delaney Benchmark (1,144 Compounds): 77% Baseline Model Parity Scatter (Left) vs. Upgraded 90%+ Model Parity Scatter (Right)",
+                    caption="Delaney Benchmark (1,144 Compounds): 77.00% Baseline Linear Model (Left) vs. 91.52% CV / 99.93% Benchmark Model (Right)",
                     use_container_width=True
                 )
 
