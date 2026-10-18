@@ -248,20 +248,19 @@ with open(model_path, 'rb') as f:
     load_model = pickle.load(f)
 
 ######################
-# Top Right Pill Theme Switcher
+# Sidebar Theme Pill (Top Left, No Emojis)
 ######################
-# Container for the top-right floating pill
-theme_choice = st.segmented_control(
+theme_choice = st.sidebar.segmented_control(
     "Theme",
-    options=["🌙", "☀️"],
-    default="🌙",
+    options=["Dark", "Light"],
+    default="Dark",
     label_visibility="collapsed",
-    key="top_right_theme_pill"
+    key="sidebar_theme_pill"
 )
 
 if not theme_choice:
-    theme_choice = "🌙"
-is_dark = (theme_choice == "🌙")
+    theme_choice = "Dark"
+is_dark = (theme_choice == "Dark")
 
 if is_dark:
     st.markdown("""
@@ -277,27 +276,26 @@ if is_dark:
         .viewerBadge_container__1QSob {display: none !important;}
         [data-testid="manage-app-button"] {display: none !important;}
 
-        /* Floating Pill Button in Top Right */
-        [data-testid="stSegmentedControl"] {
-            position: fixed !important;
-            top: 14px !important;
-            right: 28px !important;
-            z-index: 999999 !important;
-            background: rgba(30, 41, 59, 0.85) !important;
-            backdrop-filter: blur(8px) !important;
+        /* Sidebar Theme Pill Styling (Top Left) */
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] {
+            margin-top: 0px !important;
+            margin-bottom: 14px !important;
             border-radius: 9999px !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            background: rgba(30, 41, 59, 0.7) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
             padding: 2px !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35) !important;
+            width: fit-content !important;
         }
-        [data-testid="stSegmentedControl"] button {
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button {
             border-radius: 9999px !important;
-            padding: 2px 8px !important;
+            padding: 2px 14px !important;
             min-height: 24px !important;
             height: 26px !important;
-            font-size: 13px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
             border: none !important;
         }
+
         /* Dark Theme Overrides */
         .stApp {
             background-color: #0e1117 !important;
@@ -335,27 +333,26 @@ else:
         .viewerBadge_container__1QSob {display: none !important;}
         [data-testid="manage-app-button"] {display: none !important;}
 
-        /* Floating Pill Button in Top Right */
-        [data-testid="stSegmentedControl"] {
-            position: fixed !important;
-            top: 14px !important;
-            right: 28px !important;
-            z-index: 999999 !important;
-            background: rgba(241, 245, 249, 0.9) !important;
-            backdrop-filter: blur(8px) !important;
+        /* Sidebar Theme Pill Styling (Top Left) */
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] {
+            margin-top: 0px !important;
+            margin-bottom: 14px !important;
             border-radius: 9999px !important;
-            border: 1px solid rgba(0, 0, 0, 0.15) !important;
+            background: rgba(226, 232, 240, 0.8) !important;
+            border: 1px solid rgba(0, 0, 0, 0.12) !important;
             padding: 2px !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+            width: fit-content !important;
         }
-        [data-testid="stSegmentedControl"] button {
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button {
             border-radius: 9999px !important;
-            padding: 2px 8px !important;
+            padding: 2px 14px !important;
             min-height: 24px !important;
             height: 26px !important;
-            font-size: 13px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
             border: none !important;
         }
+
         /* Light Theme Overrides */
         .stApp {
             background-color: #ffffff !important;
