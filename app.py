@@ -379,27 +379,26 @@ if is_dark:
             box-shadow: 0 2px 12px rgba(212, 175, 55, 0.3) !important;
         }
 
-        /* Dark Theme Overrides with Pure Black & Authentic Luxury Metallic Gold */
+        /* Dark Theme Overrides with Solid Black & Authentic Luxury Metallic Gold */
         .stApp {
             background-color: #000000 !important;
             background-image: 
-                radial-gradient(ellipse at 50% 18%, rgba(212, 175, 55, 0.07) 0%, rgba(0, 0, 0, 0.98) 75%),
                 linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(rgba(212, 175, 55, 0.035) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(212, 175, 55, 0.035) 1px, transparent 1px) !important;
-            background-size: 100% 100%, 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
-            background-position: 0 0, 0 0, 0 0, 0 0, 0 0 !important;
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px) !important;
+            background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
+            background-position: 0 0, 0 0, 0 0, 0 0 !important;
             animation: blueprint-drift 40s linear infinite !important;
             color: #f8fafc !important;
         }
 
         @keyframes blueprint-drift {
             0% {
-                background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+                background-position: 0 0, 0 0, 0 0, 0 0;
             }
             100% {
-                background-position: 0 0, 100px 100px, 100px 100px, 100px 100px, 100px 100px;
+                background-position: 100px 100px, 100px 100px, 100px 100px, 100px 100px;
             }
         }
 
