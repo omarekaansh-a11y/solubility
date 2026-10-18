@@ -296,6 +296,51 @@ is_dark = (theme_choice == "Dark")
 if is_dark:
     st.markdown("""
     <style>
+        /* Universal Anti-Horizontal Scroll & Box Sizing */
+        *, *::before, *::after {
+            box-sizing: border-box !important;
+        }
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main, .main {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            width: 100% !important;
+        }
+        .block-container {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+            padding-top: 1.5rem !important;
+        }
+        [data-testid="stHorizontalBlock"] {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+        [data-testid="column"] {
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+        table, .stTable {
+            max-width: 100% !important;
+            word-break: break-word !important;
+            table-layout: auto !important;
+        }
+        [data-testid="stDataFrame"], .stDataFrame {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
         /* Remove Streamlit branding, menu, and footers */
         #MainMenu {visibility: hidden !important; display: none !important;}
         footer {visibility: hidden !important; display: none !important;}
@@ -353,6 +398,51 @@ if is_dark:
 else:
     st.markdown("""
     <style>
+        /* Universal Anti-Horizontal Scroll & Box Sizing */
+        *, *::before, *::after {
+            box-sizing: border-box !important;
+        }
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main, .main {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            width: 100% !important;
+        }
+        .block-container {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+            padding-top: 1.5rem !important;
+        }
+        [data-testid="stHorizontalBlock"] {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+        [data-testid="column"] {
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+        table, .stTable {
+            max-width: 100% !important;
+            word-break: break-word !important;
+            table-layout: auto !important;
+        }
+        [data-testid="stDataFrame"], .stDataFrame {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
         /* Remove Streamlit branding, menu, and footers */
         #MainMenu {visibility: hidden !important; display: none !important;}
         footer {visibility: hidden !important; display: none !important;}
@@ -544,10 +634,9 @@ else:
             r["Classification"] = classification
             r["Explanation"] = explanation
 
-        # Display results in 4 tabs with 2D structures as default
-        tab1, tab2, tab3, tab4 = st.tabs([
-            "🧬 2D Structures & Details",
-            "📊 Summary Table & Descriptors",
+        # Display results in 3 tabs with 2D structures & summary table combined in Tab 1
+        tab1, tab2, tab3 = st.tabs([
+            "🧬 2D Structures & Predictions Summary",
             "📐 Model Architecture & Chemical Descriptors",
             "🎯 Model Accuracy Benchmark (1,144 Compounds)"
         ])
@@ -572,8 +661,8 @@ else:
                         st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
                         st.info(f"**{r['Classification']}**\n\n{r['Explanation']}")
 
-        with tab2:
-            st.subheader("Solubility Predictions Summary")
+            st.markdown("---")
+            st.subheader("📊 Solubility Predictions Summary")
 
             display_df = pd.DataFrame([{
                 "Compound": r["DisplayName"],
@@ -600,7 +689,7 @@ else:
                 mime="text/csv"
             )
 
-        with tab3:
+        with tab2:
             st.subheader("How the High-Accuracy Predictive Engine Works")
             st.markdown(r"""
             **Aqueous Solubility ($\text{LogS}$)** is the $\log_{10}$ of molar solubility measured in $\text{mol/L}$.
@@ -668,11 +757,11 @@ else:
                 {"Descriptor": "FractionCSP3", "Value": f"{sample['FractionCSP3']:.2f}", "Description": "Ratio of sp³ hybridized carbons to total carbons"},
                 {"Descriptor": "Morgan Fingerprint", "Value": "512 bits (ECFP4)", "Description": "Radius-2 circular topological subgraph features"}
             ])
-            st.table(desc_table)
+            st.dataframe(desc_table, use_container_width=True, hide_index=True)
 
             st.success(f"🎯 **Predicted Aqueous Solubility:** **{s_pred:.3f} LogS (mol/L)** — **{sample['Classification']}** ({sample['Explanation']})")
 
-        with tab4:
+        with tab3:
             st.subheader("🎯 Model Accuracy Benchmark on 1,144 Compounds")
             st.markdown("""
             This machine learning model was rigorously tested and validated across the complete **Delaney ESOL benchmark dataset (1,144 chemical molecules)** with experimental lab-measured aqueous solubility values.
@@ -716,31 +805,6 @@ else:
             ])
             st.dataframe(stat_summary, use_container_width=True)
             st.caption("Benchmark Reference: John S. Delaney. J. Chem. Inf. Comput. Sci. 2004, 44, 3, 1000–1005.")
-
-######################
-# Name-to-SMILES Reference Table (Extreme Bottom)
-######################
-if molecules_to_process:
-    st.markdown("---")
-    with st.expander("📋 Chemical Translation & Structure Table (Name ➔ SMILES Reference)", expanded=False):
-        st.write("Detailed translation breakdown for all inputted compounds:")
-        bottom_rows = []
-        for m in molecules_to_process:
-            if m["smiles"] != "INVALID":
-                bottom_rows.append({
-                    "Compound Name": m["name"],
-                    "Molecular Formula": m.get("formula", "—") if m.get("formula") else "—",
-                    "Generated SMILES": m["smiles"],
-                    "IUPAC Name": m.get("iupac", "—") if m.get("iupac") else "—"
-                })
-            else:
-                bottom_rows.append({
-                    "Compound Name": m["name"],
-                    "Molecular Formula": "Not found",
-                    "Generated SMILES": "⚠️ Could not resolve name to structure",
-                    "IUPAC Name": "N/A"
-                })
-        st.dataframe(pd.DataFrame(bottom_rows), use_container_width=True)
 
 st.markdown("---")
 st.caption("Bioinformatics Web Application | Molecular Solubility Predictor & Chemical Translator | Powered by Machine Learning & RDKit")
