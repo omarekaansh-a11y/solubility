@@ -690,39 +690,19 @@ else:
             )
 
         with tab2:
-            st.subheader("How the High-Accuracy Predictive Engine Works")
+            st.subheader("Model Architecture & Feature Extraction")
             st.markdown(r"""
-            **Aqueous Solubility ($\text{LogS}$)** is the $\log_{10}$ of molar solubility measured in $\text{mol/L}$.
-            
-            Our machine learning engine predicts aqueous solubility directly from chemical structure using an **Extra Trees Regressor** operating on a **524-dimensional feature representation** (12 physicochemical descriptors + 512-bit circular Morgan fingerprints).
-
-            ### 1. The 12 Physicochemical Structural Descriptors
-            * **$\text{MolLogP}$ (Octanol-Water Partition Coefficient)**: Quantifies lipophilicity via the Wildman-Crippen atomic fragmentation algorithm. Higher values indicate hydrophobicity.
-            * **$\text{MolWt}$ (Molecular Weight in $\text{g/mol}$)**: Energy penalty required to disrupt water's hydrogen-bonded lattice to form a solute cavity.
-            * **$\text{NumRotatableBonds}$**: Quantifies conformational flexibility and entropic loss upon solvent cage formation.
-            * **$\text{AromaticProportion}$**: Ratio of aromatic heavy atoms to total heavy atoms ($\text{AromaticAtoms} / \text{HeavyAtoms}$). Aromatic rings pack tightly in crystal lattices, reducing solubility.
-            * **$\text{TPSA}$ (Topological Polar Surface Area in $\text{\AA}^2$)**: Exposed polar surface area directly available for dipole-dipole hydration with water molecules.
-            * **$\text{NumHDonors}$ & $\text{NumHAcceptors}$**: Counts of hydrogen-bond donor ($-\text{OH}, -\text{NH}$) and acceptor ($-\text{O}-, =\text{N}-$) heteroatoms forming strong hydrogen bonds with bulk water.
-            * **$\text{MolMR}$ (Molar Refractivity)**: Total polarizability and steric volume of the molecule.
-            * **$\text{FractionCSP3}$**: Ratio of $sp^3$ hybridized carbons to total carbons, capturing three-dimensional molecular shape.
-            * **Ring Architecture**: Counts of aromatic rings, aliphatic rings, and total ring systems.
-
-            ### 2. 512-Bit Morgan Structural Fingerprints (ECFP4)
-            Beyond scalar properties, the model evaluates circular topological neighborhoods (radius $r = 2$, diameter 4 bonds). Every functional group, heteroatom arrangement, and substituent pattern is hashed into a 512-bit binary fingerprint vector.
-
-            ### 3. Extra Trees Ensemble Architecture
-            Instead of fitting a simple rigid linear plane, **300 randomized orthogonal decision trees** independently partition the 524-dimensional chemical feature space:
-            $$\hat{y}(\mathbf{x}) = \frac{1}{B} \sum_{b=1}^{B} T_b(\mathbf{x})$$
-            where each tree $T_b$ evaluates both physicochemical descriptors and fingerprint bits to capture complex non-linear solvation effects.
+            The predictive engine maps chemical structure to aqueous solubility ($\text{LogS}$) using an **Extra Trees Regressor (300 trees)** trained on a **524-dimensional feature vector**:
+            * **12 Physicochemical Descriptors**: Lipophilicity ($\text{MolLogP}$), molecular weight ($\text{MolWt}$), flexibility ($\text{Rotatable Bonds}$), aromaticity, polar surface area ($\text{TPSA}$), hydrogen bonding, and ring architecture.
+            * **512-Bit Morgan Fingerprints (ECFP4)**: Circular topological radius-2 substructures capturing functional groups and heteroatom environments.
             """)
 
             st.markdown("---")
-            st.subheader("🔬 Molecular Descriptor Breakdown: From Chemical Name to Feature Vector")
-            st.markdown("Select any input molecule to view the exact descriptors and structural features extracted by RDKit:")
+            st.subheader("🔬 Extracted Molecular Descriptors")
 
             if len(records) > 1:
                 sample_name = st.selectbox(
-                    "Choose a molecule to inspect:",
+                    "Select a molecule to inspect:",
                     options=[r["DisplayName"] for r in records],
                     key="math_molecule_selector"
                 )
@@ -737,23 +717,22 @@ else:
             s_pred = sample["PredictedLogS"]
 
             st.markdown(
-                f"#### Chemical Identification\n"
-                f"* **Compound Name:** `{s_name}`\n"
-                f"* **Molecular Formula:** `{s_formula}`\n"
-                f"* **Canonical SMILES Code:** `{s_smi}`\n"
-                f"* **IUPAC Designation:** *{s_iupac}*\n\n"
-                f"#### Extracted Physicochemical Descriptors"
+                f"**Compound:** `{s_name}` &nbsp;|&nbsp; "
+                f"**Formula:** `{s_formula}` &nbsp;|&nbsp; "
+                f"**SMILES:** `{s_smi}`"
             )
+            if s_iupac and s_iupac != "—":
+                st.caption(f"IUPAC: *{s_iupac}*")
 
             desc_table = pd.DataFrame([
-                {"Descriptor": "MolLogP", "Value": f"{sample['MolLogP']:.2f}", "Description": "Lipophilicity / Octanol-water partition coefficient"},
-                {"Descriptor": "MolWt", "Value": f"{sample['MolWt']:.2f} g/mol", "Description": "Molecular weight of constituent atoms"},
+                {"Descriptor": "MolLogP", "Value": f"{sample['MolLogP']:.2f}", "Description": "Lipophilicity (Wildman-Crippen)"},
+                {"Descriptor": "MolWt", "Value": f"{sample['MolWt']:.2f} g/mol", "Description": "Molecular weight"},
                 {"Descriptor": "Rotatable Bonds", "Value": f"{sample['NumRotatableBonds']}", "Description": "Conformational flexibility"},
                 {"Descriptor": "Aromatic Ratio", "Value": f"{sample['AromaticProportion']:.2f}", "Description": "Aromatic heavy atoms / total heavy atoms"},
                 {"Descriptor": "TPSA", "Value": f"{sample['TPSA']:.1f} Å²", "Description": "Topological polar surface area"},
                 {"Descriptor": "H-Bond Donors", "Value": f"{sample['NumHDonors']}", "Description": "Hydrogen-bond donor heteroatoms (-OH, -NH)"},
                 {"Descriptor": "H-Bond Acceptors", "Value": f"{sample['NumHAcceptors']}", "Description": "Hydrogen-bond acceptor heteroatoms (=O, -O-, =N-)"},
-                {"Descriptor": "MolMR", "Value": f"{sample['MolMR']:.2f}", "Description": "Molar refractivity / steric polarizability"},
+                {"Descriptor": "MolMR", "Value": f"{sample['MolMR']:.2f}", "Description": "Molar refractivity (steric polarizability)"},
                 {"Descriptor": "FractionCSP3", "Value": f"{sample['FractionCSP3']:.2f}", "Description": "Ratio of sp³ hybridized carbons to total carbons"},
                 {"Descriptor": "Morgan Fingerprint", "Value": "512 bits (ECFP4)", "Description": "Radius-2 circular topological subgraph features"}
             ])
@@ -799,19 +778,6 @@ else:
             ])
             st.dataframe(perf_df, use_container_width=True)
 
-            st.markdown("### Statistical Summary")
-            stat_summary = pd.DataFrame([
-                {"Metric": "Total Tested Compounds", "Value": "1,144 molecules"},
-                {"Metric": "Coefficient of Determination (R²)", "Value": "99.93%"},
-                {"Metric": "5-Fold Cross-Validation R²", "Value": "91.52%"},
-                {"Metric": "Pearson Correlation (r)", "Value": "1.000"},
-                {"Metric": "Root Mean Squared Error (RMSE)", "Value": "0.056 logS (mol/L)"},
-                {"Metric": "Mean Absolute Error (MAE)", "Value": "0.006 logS (mol/L)"},
-                {"Metric": "Predictions within ± 0.5 LogS", "Value": "99.8% (1,142 / 1,144)"},
-                {"Metric": "Predictions within ± 1.0 LogS", "Value": "100.0% (1,144 / 1,144)"},
-                {"Metric": "Feature Dimensionality", "Value": "524 features (12 descriptors + 512 Morgan bits)"}
-            ])
-            st.dataframe(stat_summary, use_container_width=True)
             st.caption("Benchmark Reference: John S. Delaney. J. Chem. Inf. Comput. Sci. 2004, 44, 3, 1000–1005.")
 
 st.markdown("---")
