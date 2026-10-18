@@ -615,29 +615,28 @@ else:
             term_rb = c_rb * s_rb
             term_ar = c_ar * s_ar
 
-            st.markdown(f"""
-            #### 1. Structure Resolution
-            * **Input Name:** `{s_name}`
-            * **Molecular Formula:** `{s_formula}`
-            * **Canonical SMILES Code:** `{s_smi}`
+            st.markdown(
+                f"#### 1. Structure Resolution\n"
+                f"* **Input Name:** `{s_name}`\n"
+                f"* **Molecular Formula:** `{s_formula}`\n"
+                f"* **Canonical SMILES Code:** `{s_smi}`\n\n"
+                f"#### 2. How the 4 Descriptors Were Extracted (RDKit)\n"
+                f"* **$\mathbf{{MolLogP}} = {s_logp:.2f}$**: Calculated using the Wildman-Crippen atomic fragmentation algorithm. Every atom is assigned a hydrophilic or lipophilic contribution based on its neighborhood.\n"
+                f"* **$\mathbf{{MolWt}} = {s_mw:.2f}\text{{ g/mol}}$**: Computed by summing the exact atomic weights of all constituent atoms in the molecule ({s_formula}).\n"
+                f"* **$\mathbf{{NumRotatableBonds}} = {s_rb}$**: Number of non-ring, non-terminal single bonds allowing 360° rotational freedom.\n"
+                f"* **$\mathbf{{AromaticProportion}} = {s_ar:.2f}$**: Calculated as `Aromatic Atoms / Total Heavy Atoms`. (0.0 means purely aliphatic; 1.0 means fully aromatic).\n\n"
+                f"#### 3. Step-by-Step Mathematical Substitution\n"
+            )
 
-            #### 2. How the 4 Descriptors Were Extracted (RDKit)
-            * **$\text{{MolLogP}} = {s_logp:.2f}$**: Calculated using the Wildman-Crippen atomic fragmentation algorithm. Every atom (carbon, oxygen, nitrogen, hydrogen) is assigned a hydrophilic or lipophilic contribution based on its neighborhood.
-            * **$\text{{MolWt}} = {s_mw:.2f}\text{{ g/mol}}$**: Computed by summing the exact atomic weights of all constituent atoms in the molecule ({s_formula}).
-            * **$\text{{NumRotatableBonds}} = {s_rb}$**: Number of non-ring, non-terminal single bonds allowing 360° rotational freedom.
-            * **$\text{{AromaticProportion}} = {s_ar:.2f}$**: Calculated as `Aromatic Atoms / Total Heavy Atoms`. (0.0 means purely aliphatic; 1.0 means fully aromatic).
-
-            #### 3. Step-by-Step Mathematical Substitution
-            """)
-
-            st.latex(rf"""
-            \begin{{aligned}}
-            \text{{LogS}} &= \text{{Intercept}} + (c_1 \times \text{{MolLogP}}) + (c_2 \times \text{{MolWt}}) + (c_3 \times \text{{NumRotatableBonds}}) + (c_4 \times \text{{AromaticProportion}}) \\
-            &= {intercept:.4f} + ({c_logp:.4f} \times {s_logp:.2f}) + ({c_mw:.4f} \times {s_mw:.2f}) + ({c_rb:.4f} \times {s_rb}) + ({c_ar:.4f} \times {s_ar:.2f}) \\
-            &= {intercept:.4f} + ({term_logp:.4f}) + ({term_mw:.4f}) + ({term_rb:.4f}) + ({term_ar:.4f}) \\
-            &= \mathbf{{{s_pred:.3f}\text{{ mol/L}}}}
-            \end{aligned}
-            """)
+            latex_str = (
+                r"\begin{aligned}" "\n"
+                rf"\text{{LogS}} &= \text{{Intercept}} + (c_1 \times \text{{MolLogP}}) + (c_2 \times \text{{MolWt}}) + (c_3 \times \text{{NumRotatableBonds}}) + (c_4 \times \text{{AromaticProportion}}) \\" "\n"
+                rf"&= {intercept:.4f} + ({c_logp:.4f} \times {s_logp:.2f}) + ({c_mw:.4f} \times {s_mw:.2f}) + ({c_rb:.4f} \times {s_rb}) + ({c_ar:.4f} \times {s_ar:.2f}) \\" "\n"
+                rf"&= {intercept:.4f} + ({term_logp:.4f}) + ({term_mw:.4f}) + ({term_rb:.4f}) + ({term_ar:.4f}) \\" "\n"
+                rf"&= \mathbf{{{s_pred:.3f}\text{{ mol/L}}}}" "\n"
+                r"\end{aligned}"
+            )
+            st.latex(latex_str)
 
             st.info(f"**Interpretation:** {sample['DisplayName']} has a predicted aqueous solubility of **{s_pred:.3f} LogS (mol/L)**, which corresponds to **{sample['Classification']}** ({sample['Explanation']}).")
 
