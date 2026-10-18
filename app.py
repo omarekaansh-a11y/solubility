@@ -389,19 +389,57 @@ css_styles = """
     /* Universal Anti-Scroll for 2D Images, Columns & Containers */
     [data-testid="stHorizontalBlock"] {
         max-width: 100% !important;
-        overflow: hidden !important;
         overflow-x: hidden !important;
-        overflow-y: hidden !important;
+        overflow-y: visible !important;
     }
-    [data-testid="column"],
+    [data-testid="column"] {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
     [data-testid="column"] > div {
         min-width: 0 !important;
         max-width: 100% !important;
-        overflow: hidden !important;
         overflow-x: hidden !important;
-        overflow-y: hidden !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
+        overflow-y: visible !important;
+    }
+    .element-container, [data-testid="stMarkdownContainer"] {
+        overflow: visible !important;
+    }
+    .mol-explanation-card {
+        background-color: #0c0c0e !important;
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        border-left: 3px solid #D4AF37 !important;
+        border-radius: 8px !important;
+        padding: 14px 16px 18px 16px !important;
+        margin-top: 10px !important;
+        margin-bottom: 24px !important;
+        min-height: 125px !important;
+        height: auto !important;
+        box-sizing: border-box !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        overflow: visible !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+    }
+    .mol-explanation-card .card-title {
+        color: #DFB15B !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 8px !important;
+        line-height: 1.35 !important;
+    }
+    .mol-explanation-card .card-body {
+        color: #cbd5e1 !important;
+        font-size: 0.85rem !important;
+        line-height: 1.55 !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        flex-grow: 1 !important;
     }
     [data-testid="column"]::-webkit-scrollbar,
     [data-testid="stImage"]::-webkit-scrollbar,
@@ -782,19 +820,11 @@ else:
                             st.caption(f"Formula: `{r['Formula']}`")
                         st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
                         st.markdown(f"""
-                        <div style="
-                            background-color: #0c0c0e;
-                            border: 1px solid rgba(212, 175, 55, 0.3);
-                            border-left: 3px solid #D4AF37;
-                            border-radius: 8px;
-                            padding: 12px 14px;
-                            margin-top: 8px;
-                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-                        ">
-                            <div style="color: #DFB15B; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px;">
+                        <div class="mol-explanation-card">
+                            <div class="card-title">
                                 {r['Classification']}
                             </div>
-                            <div style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.45;">
+                            <div class="card-body">
                                 {r['Explanation']}
                             </div>
                         </div>
