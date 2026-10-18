@@ -557,8 +557,8 @@ else:
             margin-top: 0px !important;
             margin-bottom: 14px !important;
             border-radius: 9999px !important;
-            background: rgba(226, 232, 240, 0.8) !important;
-            border: 1px solid rgba(0, 0, 0, 0.12) !important;
+            background: #e2e8f0 !important;
+            border: 1px solid #cbd5e1 !important;
             padding: 2px !important;
             width: fit-content !important;
         }
@@ -570,6 +570,14 @@ else:
             font-size: 12px !important;
             font-weight: 500 !important;
             border: none !important;
+            background: transparent !important;
+            color: #64748b !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button[aria-checked="true"] {
+            background: #ffffff !important;
+            color: #0284c7 !important;
+            font-weight: 700 !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12) !important;
         }
 
         /* Light Theme Overrides with Moving Blueprint 3D Background */
@@ -597,34 +605,165 @@ else:
         }
 
         [data-testid="stSidebar"] {
-            background-color: rgba(248, 250, 252, 0.92) !important;
+            background-color: rgba(248, 250, 252, 0.95) !important;
             backdrop-filter: blur(16px) !important;
-            border-right: 1px solid rgba(2, 132, 199, 0.15) !important;
+            border-right: 1px solid rgba(2, 132, 199, 0.18) !important;
+        }
+        [data-testid="stSidebar"] [role="radiogroup"] label div[role="radio"] {
+            background-color: #ffffff !important;
+            border: 2px solid #94a3b8 !important;
+        }
+        [data-testid="stSidebar"] [role="radiogroup"] label div[role="radio"][aria-checked="true"] {
+            border-color: #0284c7 !important;
+            background-color: #0284c7 !important;
+        }
+        [data-testid="stSidebar"] [role="radiogroup"] label span {
+            color: #1e293b !important;
         }
         .stMarkdown, p, span, label, h1, h2, h3, h4 {
             color: #0f172a !important;
         }
         .mol-card {
-            background: rgba(255, 255, 255, 0.9) !important;
+            background: rgba(255, 255, 255, 0.92) !important;
             backdrop-filter: blur(14px) !important;
-            border: 1px solid rgba(2, 132, 199, 0.18) !important;
-            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+            border: 1px solid rgba(2, 132, 199, 0.22) !important;
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
             border-radius: 14px;
             padding: 16px;
             margin-bottom: 12px;
         }
         [data-testid="stMetricValue"] {
-            color: #2563eb !important;
+            color: #0284c7 !important;
+            font-weight: 700 !important;
         }
         [data-testid="stMetricLabel"] {
             color: #64748b !important;
         }
+
+        /* Tabs Light Theme */
+        button[data-baseweb="tab"] {
+            color: #64748b !important;
+            font-weight: 500 !important;
+        }
+        button[data-baseweb="tab"]:hover {
+            color: #0284c7 !important;
+        }
+        button[data-baseweb="tab"][aria-selected="true"] {
+            color: #0284c7 !important;
+            border-bottom: 2px solid #0284c7 !important;
+        }
+        button[data-baseweb="tab"][aria-selected="true"] p, 
+        button[data-baseweb="tab"][aria-selected="true"] div {
+            color: #0284c7 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Selectboxes & Dropdowns Fix for Light Theme */
+        [data-baseweb="select"], [data-baseweb="select"] > div {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+        }
+        [data-baseweb="select"] * {
+            color: #0f172a !important;
+            fill: #0f172a !important;
+        }
+        div[data-baseweb="popover"], div[data-baseweb="popover"] > div, ul[role="listbox"] {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+        }
+        li[role="option"] {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+        li[role="option"]:hover, li[role="option"][aria-selected="true"] {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+        }
+
+        /* Dataframes Invert Fix for Light Theme */
+        [data-testid="stDataFrame"], .stDataFrame {
+            filter: invert(1) hue-rotate(180deg) !important;
+            border-radius: 12px !important;
+            border: 1px solid #cbd5e1 !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Download Button Fix for Light Theme */
+        .stDownloadButton button, button[kind="primary"], button[kind="secondary"] {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            border: 1px solid rgba(2, 132, 199, 0.4) !important;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25) !important;
+            border-radius: 8px !important;
+            transition: all 0.2s ease !important;
+        }
+        .stDownloadButton button:hover, button[kind="primary"]:hover, button[kind="secondary"]:hover {
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35) !important;
+            transform: translateY(-1px) !important;
+        }
+        .stDownloadButton button p, .stDownloadButton button span, .stDownloadButton button div {
+            color: #ffffff !important;
+        }
+
+        /* Code Pills Fix for Light Theme */
+        code, pre, .stMarkdown code {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            border: 1px solid #bae6fd !important;
+            padding: 2px 7px !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+        }
+
+        /* Inputs & Textareas Fix for Light Theme */
+        .stTextInput input, .stTextArea textarea {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+        .stTextInput input:focus, .stTextArea textarea:focus {
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 1px #0284c7 !important;
+        }
+
+        /* Alerts & Info Callouts in Light Theme */
+        [data-testid="stAlert"] {
+            background-color: rgba(240, 249, 255, 0.95) !important;
+            border: 1px solid rgba(2, 132, 199, 0.25) !important;
+            border-left: 4px solid #0284c7 !important;
+            color: #0c4a6e !important;
+        }
+        [data-testid="stAlert"] * {
+            color: #0c4a6e !important;
+        }
+        [data-testid="stAlert"] svg {
+            fill: #0284c7 !important;
+            color: #0284c7 !important;
+        }
+        div.stSuccess {
+            background-color: #f0fdf4 !important;
+            border: 1px solid #bbf7d0 !important;
+            border-left: 4px solid #16a34a !important;
+            color: #14532d !important;
+        }
+        div.stSuccess * {
+            color: #14532d !important;
+        }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("""
+flask_stroke = "url(#goldFlaskGrad)" if is_dark else "#0284c7"
+st.markdown(f"""
 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="url(#goldFlaskGrad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="{flask_stroke}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <defs>
             <linearGradient id="goldFlaskGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#F8ECC2" />
