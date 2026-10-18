@@ -279,34 +279,24 @@ with open(model_path, 'rb') as f:
     model_meta = pickle.load(f)
 predictive_model = model_meta["model"]
 
-font_woff_path = os.path.join(script_dir, 'Molecule.woff')
-molecule_font_b64 = ""
+font_woff_path = os.path.join(script_dir, 'Aileron.woff')
+aileron_font_b64 = ""
 if os.path.exists(font_woff_path):
     with open(font_woff_path, 'rb') as f:
-        molecule_font_b64 = base64.b64encode(f.read()).decode('utf-8')
-local_font_src = f", url('data:font/woff;base64,{molecule_font_b64}') format('woff')" if molecule_font_b64 else ""
+        aileron_font_b64 = base64.b64encode(f.read()).decode('utf-8')
+local_font_src = f", url('data:font/woff;base64,{aileron_font_b64}') format('woff')" if aileron_font_b64 else ""
 
 css_styles = """
 <style>
     @import url('https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700,800,900&display=swap');
-    @import url('https://fonts.cdnfonts.com/css/molecule');
-    @import url('https://fonts.cdnfonts.com/css/molecules');
+    @import url('https://fonts.cdnfonts.com/css/aileron');
 
     @font-face {
-        font-family: 'Molecule';
+        font-family: 'Aileron';
         font-style: normal;
         font-weight: 400;
-        src: local('Molecule'),
-             url('https://fonts.cdnfonts.com/s/96627/Molecule-JR99E.woff') format('woff')__LOCAL_FONT_SRC__;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'molecules';
-        font-style: normal;
-        font-weight: 400;
-        src: local('molecules'),
-             url('https://fonts.cdnfonts.com/s/63182/Molecules-nR4pY.woff') format('woff');
+        src: local('Aileron'),
+             url('https://fonts.cdnfonts.com/s/16225/Aileron-Regular.woff') format('woff')__LOCAL_FONT_SRC__;
         font-display: swap;
     }
 
@@ -337,7 +327,7 @@ css_styles = """
         font-weight: 600 !important;
     }
 
-    /* Molecule Typography for Smaller Text / Body Elements */
+    /* Aileron Typography for Smaller Text / Body Elements */
     .stApp,
     .stApp *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not([data-testid="stHeadingWithActionElements"]):not([data-testid="stHeadingWithActionElements"] *),
     p, span:not([data-testid="stHeadingWithActionElements"] *),
@@ -355,7 +345,7 @@ css_styles = """
     table, tr, td, th,
     .stDataFrame,
     .stDataFrame * {
-        font-family: 'Molecule', 'molecules', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-family: 'Aileron', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     }
 
     /* Universal Anti-Horizontal Scroll & Box Sizing */
