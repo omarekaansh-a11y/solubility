@@ -357,7 +357,7 @@ if is_dark:
             margin-top: 0px !important;
             margin-bottom: 14px !important;
             border-radius: 9999px !important;
-            background: rgba(30, 41, 59, 0.7) !important;
+            background: #111111 !important;
             border: 1px solid rgba(255, 255, 255, 0.15) !important;
             padding: 2px !important;
             width: fit-content !important;
@@ -370,21 +370,26 @@ if is_dark:
             font-size: 12px !important;
             font-weight: 500 !important;
             border: none !important;
+            color: #a1a1aa !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stSegmentedControl"] button[aria-checked="true"] {
+            background: #262626 !important;
+            color: #ffffff !important;
         }
 
-        /* Dark Theme Overrides with Moving Blueprint 3D Background */
+        /* Dark Theme Overrides with Pure Black Moving Blueprint 3D Background */
         .stApp {
-            background-color: #0b0f17 !important;
+            background-color: #000000 !important;
             background-image: 
-                radial-gradient(ellipse at 50% 25%, rgba(14, 165, 233, 0.15) 0%, rgba(11, 15, 23, 0.94) 75%),
-                linear-gradient(rgba(14, 165, 233, 0.13) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(14, 165, 233, 0.13) 1px, transparent 1px),
-                linear-gradient(rgba(14, 165, 233, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px) !important;
+                radial-gradient(ellipse at 50% 25%, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.98) 75%),
+                linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px) !important;
             background-size: 100% 100%, 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
             background-position: 0 0, 0 0, 0 0, 0 0, 0 0 !important;
             animation: blueprint-drift 40s linear infinite !important;
-            color: #f1f5f9 !important;
+            color: #f8fafc !important;
         }
 
         @keyframes blueprint-drift {
@@ -397,24 +402,34 @@ if is_dark:
         }
 
         [data-testid="stSidebar"] {
-            background-color: rgba(15, 23, 42, 0.92) !important;
+            background-color: #000000 !important;
             backdrop-filter: blur(16px) !important;
-            border-right: 1px solid rgba(14, 165, 233, 0.15) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
         }
         .mol-card {
-            background: rgba(17, 24, 39, 0.85) !important;
+            background: #09090b !important;
             backdrop-filter: blur(14px) !important;
-            border: 1px solid rgba(14, 165, 233, 0.22) !important;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
             border-radius: 14px;
             padding: 16px;
             margin-bottom: 12px;
         }
         [data-testid="stMetricValue"] {
-            color: #60a5fa !important;
+            color: #ffffff !important;
         }
         [data-testid="stMetricLabel"] {
-            color: #94a3b8 !important;
+            color: #a1a1aa !important;
+        }
+        [data-testid="stAlert"] {
+            background-color: #09090b !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: #f1f5f9 !important;
+        }
+        .stTextInput input, .stTextArea textarea, [data-baseweb="select"] {
+            background-color: #09090b !important;
+            border-color: rgba(255, 255, 255, 0.18) !important;
+            color: #f8fafc !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -549,7 +564,7 @@ else:
 
 st.markdown("""
 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 2v7.31"></path>
         <path d="M14 9.3V1.99"></path>
         <path d="M8.5 2h7"></path>
