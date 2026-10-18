@@ -484,30 +484,6 @@ else: # Quick Example Presets (Max 3 molecules per preset for a single clean row
                 })
 
 ######################
-# Translation Summary Expander
-######################
-if input_mode == "🔤 By Molecule Name (e.g. Glucose, Aspirin)" and molecules_to_process:
-    with st.expander("🔍 Chemical Name Translator Results (Name ➔ SMILES)", expanded=True):
-        st.write("Here is how your plain-English names were translated into chemical structures:")
-        trans_rows = []
-        for m in molecules_to_process:
-            if m["smiles"] != "INVALID":
-                trans_rows.append({
-                    "Input Name": m["name"],
-                    "Molecular Formula": m.get("formula", "N/A"),
-                    "Generated SMILES": m["smiles"],
-                    "IUPAC Name": m.get("iupac", "N/A")
-                })
-            else:
-                trans_rows.append({
-                    "Input Name": m["name"],
-                    "Molecular Formula": "Not found",
-                    "Generated SMILES": "⚠️ Could not resolve name to structure",
-                    "IUPAC Name": "N/A"
-                })
-        st.dataframe(pd.DataFrame(trans_rows), use_container_width=True)
-
-######################
 # Run Prediction Pipeline
 ######################
 valid_molecules = [m for m in molecules_to_process if m["smiles"] != "INVALID"]
@@ -607,6 +583,88 @@ else:
             })
             st.table(coef_table)
             st.write(f"**Model Intercept:** `{load_model.intercept_:.4f}`")
+
+            st.markdown("---")
+            st.subheader("🔬 Derivation Walkthrough: From Molecular Name to Equation Values")
+            st.markdown("Here is the complete step-by-step breakdown showing how all values in the model equation are calculated directly from the molecule's chemical structure:")
+
+            if len(records) > 1:
+                sample_name = st.selectbox(
+                    "Choose a molecule to view its step-by-step calculation:",
+                    options=[r["DisplayName"] for r in records],
+                    key="math_molecule_selector"
+                )
+                sample = next(r for r in records if r["DisplayName"] == sample_name)
+            else:
+                sample = records[0]
+
+            s_name = sample["DisplayName"]
+            s_smi = sample["SMILES"]
+            s_formula = sample.get("Formula", "—")
+            s_logp = sample["MolLogP"]
+            s_mw = sample["MolWt"]
+            s_rb = sample["NumRotatableBonds"]
+            s_ar = sample["AromaticProportion"]
+            s_pred = sample["PredictedLogS"]
+
+            c_logp, c_mw, c_rb, c_ar = load_model.coef_
+            intercept = load_model.intercept_
+
+            term_logp = c_logp * s_logp
+            term_mw = c_mw * s_mw
+            term_rb = c_rb * s_rb
+            term_ar = c_ar * s_ar
+
+            st.markdown(f"""
+            #### 1. Structure Resolution
+            * **Input Name:** `{s_name}`
+            * **Molecular Formula:** `{s_formula}`
+            * **Canonical SMILES Code:** `{s_smi}`
+
+            #### 2. How the 4 Descriptors Were Extracted (RDKit)
+            * **$\text{{MolLogP}} = {s_logp:.2f}$**: Calculated using the Wildman-Crippen atomic fragmentation algorithm. Every atom (carbon, oxygen, nitrogen, hydrogen) is assigned a hydrophilic or lipophilic contribution based on its neighborhood.
+            * **$\text{{MolWt}} = {s_mw:.2f}\text{{ g/mol}}$**: Computed by summing the exact atomic weights of all constituent atoms in the molecule ({s_formula}).
+            * **$\text{{NumRotatableBonds}} = {s_rb}$**: Number of non-ring, non-terminal single bonds allowing 360° rotational freedom.
+            * **$\text{{AromaticProportion}} = {s_ar:.2f}$**: Calculated as `Aromatic Atoms / Total Heavy Atoms`. (0.0 means purely aliphatic; 1.0 means fully aromatic).
+
+            #### 3. Step-by-Step Mathematical Substitution
+            """)
+
+            st.latex(rf"""
+            \begin{{aligned}}
+            \text{{LogS}} &= \text{{Intercept}} + (c_1 \times \text{{MolLogP}}) + (c_2 \times \text{{MolWt}}) + (c_3 \times \text{{NumRotatableBonds}}) + (c_4 \times \text{{AromaticProportion}}) \\
+            &= {intercept:.4f} + ({c_logp:.4f} \times {s_logp:.2f}) + ({c_mw:.4f} \times {s_mw:.2f}) + ({c_rb:.4f} \times {s_rb}) + ({c_ar:.4f} \times {s_ar:.2f}) \\
+            &= {intercept:.4f} + ({term_logp:.4f}) + ({term_mw:.4f}) + ({term_rb:.4f}) + ({term_ar:.4f}) \\
+            &= \mathbf{{{s_pred:.3f}\text{{ mol/L}}}}
+            \end{aligned}
+            """)
+
+            st.info(f"**Interpretation:** {sample['DisplayName']} has a predicted aqueous solubility of **{s_pred:.3f} LogS (mol/L)**, which corresponds to **{sample['Classification']}** ({sample['Explanation']}).")
+
+######################
+# Name-to-SMILES Reference Table (Extreme Bottom)
+######################
+if molecules_to_process:
+    st.markdown("---")
+    with st.expander("📋 Chemical Translation & Structure Table (Name ➔ SMILES Reference)", expanded=False):
+        st.write("Detailed translation breakdown for all inputted compounds:")
+        bottom_rows = []
+        for m in molecules_to_process:
+            if m["smiles"] != "INVALID":
+                bottom_rows.append({
+                    "Compound Name": m["name"],
+                    "Molecular Formula": m.get("formula", "—") if m.get("formula") else "—",
+                    "Generated SMILES": m["smiles"],
+                    "IUPAC Name": m.get("iupac", "—") if m.get("iupac") else "—"
+                })
+            else:
+                bottom_rows.append({
+                    "Compound Name": m["name"],
+                    "Molecular Formula": "Not found",
+                    "Generated SMILES": "⚠️ Could not resolve name to structure",
+                    "IUPAC Name": "N/A"
+                })
+        st.dataframe(pd.DataFrame(bottom_rows), use_container_width=True)
 
 st.markdown("---")
 st.caption("Bioinformatics Web Application | Molecular Solubility Predictor & Chemical Translator | Powered by Machine Learning & RDKit")
