@@ -230,31 +230,66 @@ def generate_descriptors(smiles_entries):
     return valid_records, invalid_entries
 
 def explain_solubility(logs):
-    """Plain English solubility rating and explanation."""
+    """Plain English solubility rating, explanation, and visual color cues."""
     if logs > 0:
         return (
             "Highly Soluble (> 1 mol/L)",
-            "● Dissolves very easily in water. Typical of polar molecules like simple sugars and low-chain alcohols."
+            "Dissolves very easily in water. Typical of polar molecules like simple sugars and low-chain alcohols.",
+            {
+                "accent": "#22c55e",       # Green
+                "title": "#4ade80",
+                "border": "rgba(34, 197, 94, 0.35)",
+                "bg": "#080d0a",
+                "glow": "rgba(34, 197, 94, 0.16)"
+            }
         )
     elif logs > -2:
         return (
             "Very Soluble (0.01 – 1 mol/L)",
-            "● Readily dissolves in water with high solubility. Good bioavailability profile."
+            "Readily dissolves in water with high solubility. Good bioavailability profile.",
+            {
+                "accent": "#10b981",       # Mint / Spring Green
+                "title": "#34d399",
+                "border": "rgba(16, 185, 129, 0.35)",
+                "bg": "#070e0b",
+                "glow": "rgba(16, 185, 129, 0.16)"
+            }
         )
     elif logs > -4:
         return (
             "Soluble (0.1 – 10 mmol/L)",
-            "● Moderately soluble in water. Meets the typical threshold required for active oral drug candidates."
+            "Moderately soluble in water. Meets the typical threshold required for active oral drug candidates.",
+            {
+                "accent": "#eab308",       # Yellow
+                "title": "#facc15",
+                "border": "rgba(234, 179, 8, 0.35)",
+                "bg": "#0f0e08",
+                "glow": "rgba(234, 179, 8, 0.16)"
+            }
         )
     elif logs > -6:
         return (
             "Moderately / Sparingly Soluble",
-            "● Low aqueous solubility. Often requires dissolution enhancers, formulation aids, or salts."
+            "Low aqueous solubility. Often requires dissolution enhancers, formulation aids, or salts.",
+            {
+                "accent": "#f97316",       # Orange
+                "title": "#fb923c",
+                "border": "rgba(249, 115, 22, 0.35)",
+                "bg": "#110b07",
+                "glow": "rgba(249, 115, 22, 0.16)"
+            }
         )
     else:
         return (
             "Poorly Soluble / Insoluble (< 1 µmol/L)",
-            "● Extremely hydrophobic / lipophilic. Will not dissolve meaningfully in water (e.g. fats, waxes, cholesterol)."
+            "Extremely hydrophobic / lipophilic. Will not dissolve meaningfully in water (e.g. fats, waxes, cholesterol).",
+            {
+                "accent": "#ef4444",       # Red
+                "title": "#f87171",
+                "border": "rgba(239, 68, 68, 0.35)",
+                "bg": "#120808",
+                "glow": "rgba(239, 68, 68, 0.16)"
+            }
         )
 
 ######################
@@ -410,9 +445,6 @@ css_styles = """
         overflow: visible !important;
     }
     .mol-explanation-card {
-        background-color: #0c0c0e !important;
-        border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        border-left: 3px solid #D4AF37 !important;
         border-radius: 8px !important;
         padding: 14px 16px 18px 16px !important;
         margin-top: 10px !important;
@@ -420,18 +452,19 @@ css_styles = """
         min-height: 125px !important;
         height: auto !important;
         box-sizing: border-box !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
         overflow: visible !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: flex-start !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
     }
     .mol-explanation-card .card-title {
-        color: #DFB15B !important;
         font-weight: 700 !important;
         font-size: 0.95rem !important;
         margin-bottom: 8px !important;
         line-height: 1.35 !important;
+        display: flex !important;
+        align-items: center !important;
     }
     .mol-explanation-card .card-body {
         color: #cbd5e1 !important;
@@ -790,9 +823,10 @@ else:
         for i, r in enumerate(records):
             pred_val = round(float(preds[i]), 3)
             r["PredictedLogS"] = pred_val
-            classification, explanation = explain_solubility(pred_val)
+            classification, explanation, colors = explain_solubility(pred_val)
             r["Classification"] = classification
             r["Explanation"] = explanation
+            r["Colors"] = colors
 
         # Display results in 3 tabs with 2D structures & summary table combined in Tab 1
         tab1, tab2, tab3 = st.tabs([
@@ -819,10 +853,26 @@ else:
                         if r["Formula"]:
                             st.caption(f"Formula: `{r['Formula']}`")
                         st.metric("Predicted LogS", f"{r['PredictedLogS']} mol/L")
+                        colors = r["Colors"]
                         st.markdown(f"""
-                        <div class="mol-explanation-card">
-                            <div class="card-title">
-                                {r['Classification']}
+                        <div class="mol-explanation-card" style="
+                            background-color: {colors['bg']} !important;
+                            border: 1px solid {colors['border']} !important;
+                            border-left: 4px solid {colors['accent']} !important;
+                            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 14px {colors['glow']} !important;
+                        ">
+                            <div class="card-title" style="color: {colors['title']} !important;">
+                                <span style="
+                                    display: inline-block;
+                                    width: 8px;
+                                    height: 8px;
+                                    border-radius: 50%;
+                                    background-color: {colors['accent']};
+                                    box-shadow: 0 0 8px {colors['accent']};
+                                    margin-right: 8px;
+                                    flex-shrink: 0;
+                                "></span>
+                                <span>{r['Classification']}</span>
                             </div>
                             <div class="card-body">
                                 {r['Explanation']}
@@ -893,19 +943,37 @@ else:
             ])
             st.dataframe(desc_table, use_container_width=True, hide_index=True)
 
+            sample_colors = sample.get("Colors", {
+                "accent": "#D4AF37",
+                "title": "#DFB15B",
+                "border": "rgba(212, 175, 55, 0.35)",
+                "bg": "#0c0c0e",
+                "glow": "rgba(212, 175, 55, 0.15)"
+            })
             st.markdown(f"""
             <div style="
-                background-color: #0c0c0e;
-                border: 1px solid rgba(212, 175, 55, 0.35);
-                border-left: 4px solid #D4AF37;
+                background-color: {sample_colors['bg']};
+                border: 1px solid {sample_colors['border']};
+                border-left: 4px solid {sample_colors['accent']};
                 border-radius: 8px;
                 padding: 14px 16px;
                 margin-top: 14px;
                 font-size: 0.95rem;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 14px {sample_colors['glow']};
             ">
-                <strong style="color: #DFB15B;">Predicted Aqueous Solubility:</strong> 
+                <span style="
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background-color: {sample_colors['accent']};
+                    box-shadow: 0 0 8px {sample_colors['accent']};
+                    margin-right: 8px;
+                    vertical-align: middle;
+                "></span>
+                <strong style="color: {sample_colors['title']};">Predicted Aqueous Solubility:</strong> 
                 <span style="color: #F8ECC2; font-weight: 700;">{s_pred:.3f} LogS (mol/L)</span> — 
-                <span style="color: #DFB15B; font-weight: 600;">{sample['Classification']}</span> 
+                <span style="color: {sample_colors['title']}; font-weight: 600;">{sample['Classification']}</span> 
                 <span style="color: #cbd5e1;">({sample['Explanation']})</span>
             </div>
             """, unsafe_allow_html=True)
