@@ -95,6 +95,48 @@ OFFLINE_COMPOUNDS = {
         "formula": "C16H18N2O4S",
         "iupac": "(2S,5R,6R)-3,3-dimethyl-7-oxo-6-[(2-phenylacetyl)amino]-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylic acid",
         "description": "Classic beta-lactam antibiotic."
+    },
+    "paclitaxel": {
+        "smiles": "CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C",
+        "formula": "C47H51NO14",
+        "iupac": "(1S,2S,3R,4S,7R,9S,10S,12R,15S)-4,12-diacetyloxy-15-[(2R,3S)-3-benzamido-2-hydroxy-3-phenylpropanoyl]oxy-1,9-dihydroxy-10,14,17,17-tetramethyl-11-oxo-6-oxatetracyclo[11.3.1.0^{3,10}.0^{4,7}]heptadec-13-en-2-yl benzoate",
+        "description": "Taxane chemotherapy microtubule stabilizer; classic BCS Class IV low-solubility oncology drug."
+    },
+    "doxorubicin": {
+        "smiles": "CC1C(C(CC(O1)OC2CC(CC3=C2C(=O)C4=C(C3=O)C(=CC=C4)OC)(C(=O)CO)O)N)O",
+        "formula": "C27H29NO11",
+        "iupac": "(7S,9S)-7-[(2R,4S,5S,6S)-4-amino-5-hydroxy-6-methyloxan-2-yl]oxy-6,9,11-trihydroxy-9-(2-hydroxyacetyl)-4-methoxy-8,10-dihydro-7H-tetracene-5,12-dione",
+        "description": "Anthracycline antitumor antibiotic DNA intercalator and topoisomerase II inhibitor."
+    },
+    "imatinib": {
+        "smiles": "CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5",
+        "formula": "C29H31N7O",
+        "iupac": "4-[(4-methylpiperazin-1-yl)methyl]-N-[4-methyl-3-[(4-pyridin-3-ylpyrimidin-2-yl)amino]phenyl]benzamide",
+        "description": "BCR-ABL targeted tyrosine kinase inhibitor; revolutionary targeted therapy for leukemia."
+    },
+    "atorvastatin": {
+        "smiles": "CC(C)C1=C(C(=C(N1CCC(CC(CC(=O)O)O)O)C2=CC=C(C=C2)F)C3=CC=CC=C3)C(=O)NC4=CC=CC=C4",
+        "formula": "C33H35FN2O5",
+        "iupac": "(3R,5R)-7-[2-(4-fluorophenyl)-3-phenyl-4-(phenylcarbamoyl)-5-propan-2-ylpyrrol-1-yl]-3,5-dihydroxyheptanoic acid",
+        "description": "HMG-CoA reductase inhibitor (Lipitor); classic BCS Class II poorly water-soluble drug."
+    },
+    "dexamethasone": {
+        "smiles": "CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C",
+        "formula": "C22H29FO5",
+        "iupac": "(8S,9R,10S,11S,13S,14S,16R,17R)-9-fluoro-11,17-dihydroxy-17-(2-hydroxyacetyl)-10,13,16-trimethyl-6,7,8,11,12,14,15,16-octahydrocyclopenta[a]phenanthren-3-one",
+        "description": "Potent synthetic glucocorticoid anti-inflammatory and immunosuppressive therapeutic."
+    },
+    "methotrexate": {
+        "smiles": "CN(CC1=CN=C2C(=N1)C(=NC(=N2)N)N)C3=CC=C(C=C3)C(=O)NC(CCC(=O)O)C(=O)O",
+        "formula": "C20H22N8O5",
+        "iupac": "(2S)-2-[[4-[(2,4-diaminopteridin-6-yl)methyl-methylamino]benzoyl]amino]pentanedioic acid",
+        "description": "Antimetabolite and dihydrofolate reductase inhibitor used in oncology and rheumatology."
+    },
+    "curcumin": {
+        "smiles": "COC1=C(C=CC(=C1)/C=C/C(=O)CC(=O)/C=C/C2=CC(=C(C=C2)O)OC)O",
+        "formula": "C21H20O6",
+        "iupac": "(1E,6E)-1,7-bis(4-hydroxy-3-methoxyphenyl)hepta-1,6-diene-3,5-dione",
+        "description": "Natural polyphenol bioactive agent exhibiting extreme aqueous lipophilicity and insolubility."
     }
 }
 
@@ -706,12 +748,8 @@ mol_icon_svg = """
     <circle cx="18" cy="17" r="2.8" fill="url(#goldMolGrad)"/>
 </svg>
 """
-st.markdown(f"""
-<div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
-    {mol_icon_svg}
-    <h1 style="font-family: 'Switzer', sans-serif; margin: 0; font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em;">Molecular Solubility Predictor &amp; Chemical Translator</h1>
-</div>
-""", unsafe_allow_html=True)
+header_html = f'<div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">{mol_icon_svg.strip()}<h1 style="font-family: \'Switzer\', sans-serif; margin: 0; font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; color: #f8fafc;">Molecular Solubility Predictor &amp; Chemical Translator</h1></div>'
+st.markdown(header_html, unsafe_allow_html=True)
 st.markdown("""
 Predict the **Aqueous Solubility (LogS)** of molecules using Machine Learning! 
 You can type **everyday chemical names** (like *glucose*, *aspirin*, *caffeine*) or standard **SMILES** chemical codes.
@@ -725,20 +763,20 @@ st.sidebar.header("Input Method")
 input_mode = st.sidebar.radio(
     "How would you like to enter molecules?",
     [
-        "⌕ By Molecule Name (e.g. Glucose, Aspirin)",
-        "⌬ By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)",
-        "✦ Quick Example Presets"
+        "By Molecule Name (e.g. Glucose, Aspirin)",
+        "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)",
+        "Quick Example Presets"
     ]
 )
 
 molecules_to_process = []
 
-if input_mode == "⌕ By Molecule Name (e.g. Glucose, Aspirin)":
+if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
     st.sidebar.markdown("**Translate Common Names into SMILES:**")
     st.sidebar.caption("Type any chemical or drug name (one per line):")
     name_input = st.sidebar.text_area(
         "Molecules:",
-        value="glucose\ncaffeine\naspirin",
+        value="glucose\naspirin\ncholesterol",
         height=140
     )
     raw_names = [n.strip() for n in name_input.split('\n') if n.strip()]
@@ -762,11 +800,11 @@ if input_mode == "⌕ By Molecule Name (e.g. Glucose, Aspirin)":
                 "iupac": ""
             })
 
-elif input_mode == "⌬ By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
+elif input_mode == "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
     st.sidebar.markdown("**Direct SMILES Input:**")
     smiles_input = st.sidebar.text_area(
         "SMILES strings (one per line):",
-        value="NCCCC\nCCC\nCN",
+        value="CCO\nCC(=O)Oc1ccccc1C(=O)O\nCC(C)CCCC(C)C1CCC2C1(CCC3C2CC=C4C3(CCC(C4)O)C)C",
         height=140
     )
     raw_smiles = [s.strip() for s in smiles_input.split('\n') if s.strip()]
@@ -782,16 +820,25 @@ else: # Quick Example Presets (Max 3 molecules per preset for a single clean row
     preset = st.sidebar.selectbox(
         "Select a curated compound set:",
         [
-            "Sugars & Nutrients (Glucose, Sucrose, Vitamin C)",
-            "Everyday Analgesics (Aspirin, Paracetamol, Ibuprofen)",
+            "Biomedical Oncology & Kinase Inhibitors (Paclitaxel, Doxorubicin, Imatinib)",
+            "Cardiovascular & Lipids: BCS Class II/IV (Atorvastatin, Aspirin, Cholesterol)",
+            "Clinical Corticosteroids & Antimetabolites (Dexamethasone, Methotrexate, Curcumin)",
+            "Everyday Analgesics & Antipyretics (Aspirin, Paracetamol, Ibuprofen)",
+            "Sugars & Hydrophilic Nutrients (Glucose, Sucrose, Vitamin C)",
             "Solubility Extremes (Ethanol, Aspirin, Cholesterol)",
-            "Delaney Benchmark Defaults (NCCCC, CCC, CN)"
+            "Delaney Benchmark Baseline (NCCCC, CCC, CN)"
         ]
     )
-    if preset == "Sugars & Nutrients (Glucose, Sucrose, Vitamin C)":
-        preset_names = ["glucose", "sucrose", "vitamin c"]
-    elif preset == "Everyday Analgesics (Aspirin, Paracetamol, Ibuprofen)":
+    if preset == "Biomedical Oncology & Kinase Inhibitors (Paclitaxel, Doxorubicin, Imatinib)":
+        preset_names = ["paclitaxel", "doxorubicin", "imatinib"]
+    elif preset == "Cardiovascular & Lipids: BCS Class II/IV (Atorvastatin, Aspirin, Cholesterol)":
+        preset_names = ["atorvastatin", "aspirin", "cholesterol"]
+    elif preset == "Clinical Corticosteroids & Antimetabolites (Dexamethasone, Methotrexate, Curcumin)":
+        preset_names = ["dexamethasone", "methotrexate", "curcumin"]
+    elif preset == "Everyday Analgesics & Antipyretics (Aspirin, Paracetamol, Ibuprofen)":
         preset_names = ["aspirin", "paracetamol", "ibuprofen"]
+    elif preset == "Sugars & Hydrophilic Nutrients (Glucose, Sucrose, Vitamin C)":
+        preset_names = ["glucose", "sucrose", "vitamin c"]
     elif preset == "Solubility Extremes (Ethanol, Aspirin, Cholesterol)":
         preset_names = ["ethanol", "aspirin", "cholesterol"]
     else:
@@ -848,8 +895,8 @@ else:
         # Display results in 3 tabs with 2D structures & summary table combined in Tab 1
         tab1, tab2, tab3 = st.tabs([
             "⌬ 2D Structures & Predictions Summary",
-            "☷ Model Architecture & Chemical Descriptors",
-            "◈ Model Accuracy Benchmark (1,144 Compounds)"
+            "∑ Model Architecture & Chemical Descriptors",
+            "⌖ Model Accuracy Benchmark (1,144 Compounds)"
         ])
 
         with tab1:
@@ -920,7 +967,7 @@ else:
             """)
 
             st.markdown("---")
-            st.subheader("◈ Extracted Molecular Descriptors")
+            st.subheader("∑ Extracted Molecular Descriptors")
 
             if len(records) > 1:
                 sample_name = st.selectbox(
@@ -996,7 +1043,7 @@ else:
             """, unsafe_allow_html=True)
 
         with tab3:
-            st.subheader("◈ Model Accuracy Benchmark: 77.00% Baseline vs. 91.52% CV (99.93% Benchmark)")
+            st.subheader("⌖ Model Accuracy Benchmark: 77.00% Baseline vs. 91.52% CV (99.93% Benchmark)")
             st.markdown("""
             Direct side-by-side parity comparison across the complete **Delaney ESOL benchmark dataset (1,144 chemical molecules)** with experimental lab-measured aqueous solubility values:
             * **Left (77.00% Baseline)**: Classic Delaney 4-descriptor linear regression with noticeable scatter and error spread ($R^2 = 77.00\%$, $\\text{RMSE} = 1.005$).
