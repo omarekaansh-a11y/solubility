@@ -675,23 +675,40 @@ css_styles = """
 """
 st.markdown(css_styles.replace('__LOCAL_FONT_SRC__', local_font_src), unsafe_allow_html=True)
 
-flask_stroke = "url(#goldFlaskGrad)"
+mol_icon_svg = """
+<svg width="38" height="38" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+    <defs>
+        <linearGradient id="goldMolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFF3C4" />
+            <stop offset="45%" stop-color="#DFB15B" />
+            <stop offset="80%" stop-color="#D4AF37" />
+            <stop offset="100%" stop-color="#8C5E14" />
+        </linearGradient>
+        <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <!-- Outer Hexagonal Aromatic Molecular Framework -->
+    <polygon points="18,3 30,10 30,24 18,31 6,24 6,10" 
+             stroke="url(#goldMolGrad)" stroke-width="2.2" stroke-linejoin="round" fill="rgba(212, 175, 55, 0.08)"/>
+    <!-- Delocalized Aromatic Pi-Electron System -->
+    <circle cx="18" cy="17" r="7.5" 
+            stroke="url(#goldMolGrad)" stroke-width="1.8" stroke-dasharray="3.5 2.2" fill="none"/>
+    <!-- Atomic Vertex Nodes with Metallic Glow -->
+    <circle cx="18" cy="3" r="2.5" fill="url(#goldMolGrad)" filter="url(#goldGlow)"/>
+    <circle cx="30" cy="10" r="2.5" fill="url(#goldMolGrad)" filter="url(#goldGlow)"/>
+    <circle cx="30" cy="24" r="2.5" fill="url(#goldMolGrad)" filter="url(#goldGlow)"/>
+    <circle cx="18" cy="31" r="2.5" fill="url(#goldMolGrad)" filter="url(#goldGlow)"/>
+    <circle cx="6" cy="24" r="2.5" fill="url(#goldMolGrad)" filter="url(#goldGlow)"/>
+    <circle cx="6" cy="10" r="2.5" fill="url(#goldMolGrad)" filter="url(#goldGlow)"/>
+    <!-- Central Solvation / Nucleus Node -->
+    <circle cx="18" cy="17" r="2.8" fill="url(#goldMolGrad)"/>
+</svg>
+"""
 st.markdown(f"""
 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="{flask_stroke}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <defs>
-            <linearGradient id="goldFlaskGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#F8ECC2" />
-                <stop offset="50%" stop-color="#D4AF37" />
-                <stop offset="100%" stop-color="#996515" />
-            </linearGradient>
-        </defs>
-        <path d="M10 2v7.31"></path>
-        <path d="M14 9.3V1.99"></path>
-        <path d="M8.5 2h7"></path>
-        <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
-        <path d="M5.52 16h12.96"></path>
-    </svg>
+    {mol_icon_svg}
     <h1 style="font-family: 'Switzer', sans-serif; margin: 0; font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em;">Molecular Solubility Predictor &amp; Chemical Translator</h1>
 </div>
 """, unsafe_allow_html=True)
@@ -708,15 +725,15 @@ st.sidebar.header("Input Method")
 input_mode = st.sidebar.radio(
     "How would you like to enter molecules?",
     [
-        "By Molecule Name (e.g. Glucose, Aspirin)",
-        "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)",
-        "Quick Example Presets"
+        "⌕ By Molecule Name (e.g. Glucose, Aspirin)",
+        "⌬ By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)",
+        "✦ Quick Example Presets"
     ]
 )
 
 molecules_to_process = []
 
-if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
+if input_mode == "⌕ By Molecule Name (e.g. Glucose, Aspirin)":
     st.sidebar.markdown("**Translate Common Names into SMILES:**")
     st.sidebar.caption("Type any chemical or drug name (one per line):")
     name_input = st.sidebar.text_area(
@@ -745,7 +762,7 @@ if input_mode == "By Molecule Name (e.g. Glucose, Aspirin)":
                 "iupac": ""
             })
 
-elif input_mode == "By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
+elif input_mode == "⌬ By SMILES Notation (e.g. CC(=O)Oc1ccccc1C(=O)O)":
     st.sidebar.markdown("**Direct SMILES Input:**")
     smiles_input = st.sidebar.text_area(
         "SMILES strings (one per line):",
