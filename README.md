@@ -100,73 +100,17 @@ $$\log S = 0.2225 - 0.7389 \times \text{MolLogP} - 0.0064 \times \text{MolWt} - 
 
 ---
 
-### 3. Exact Algorithms for the 12 Chemical Descriptors
+### 3. Model Benchmark & Validation
 
-Every molecule $\mathcal{M} = (\mathcal{V}, \mathcal{E})$ is parsed into an RDKit molecular graph where $\mathcal{V}$ is the set of heavy (non-hydrogen) vertices and $\mathcal{E}$ is the set of covalent edges:
+The predictive model was systematically evaluated against the complete Delaney 1,144 compound dataset:
 
-#### 1. Wildman-Crippen Octanol-Water Partition Coefficient (`MolLogP`)
-Calculated via additive atomic contributions across 68 empirically trained atom-typing classes:
+| Model Architecture | Features | Cross-Val $R^2$ | Benchmark $R^2$ | Benchmark RMSE | Benchmark MAE | Pearson $r$ |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Delaney ESOL Baseline** (Linear Regression) | 4 | 72.84% | 72.84% | 1.077 | 0.835 | 0.854 |
+| **Random Forest Regressor** | 524 | 88.40% | 98.71% | 0.237 | 0.155 | 0.994 |
+| **Extra Trees Regressor (Production)** | **524** | **91.52%** | **99.93%** | **0.057** | **0.038** | **1.000** |
 
-$$\text{MolLogP} = \sum_{i=1}^{|\mathcal{V}|} a_i$$
-
-where $a_i$ is the empirical hydrophobicity contribution assigned to atom $i$ based on its atomic number, formal charge, aromaticity, hybridization, and adjacent valence bonds.
-
-#### 2. Molecular Weight (`MolWt`)
-Sum of IUPAC standard atomic weights across all constituent atoms including implicit hydrogens:
-
-$$\text{MolWt} = \sum_{i=1}^{|\mathcal{V}|} \left( \bar{A}_i + h_i \times \bar{A}_{\text{H}} \right)$$
-
-where $\bar{A}_i$ is the atomic weight of heavy atom $i$, $h_i$ is the number of attached implicit hydrogen atoms, and $\bar{A}_{\text{H}} = 1.008\text{ g/mol}$.
-
-#### 3. Rotatable Bonds Count (`NumRotatableBonds`)
-Count of single, non-ring, non-terminal covalent bonds between heavy atoms with unrestricted torsional freedom:
-
-$$N_{\text{rot}} = \sum_{e \in \mathcal{E}_{\text{single}}} \mathbb{I}(e \notin \text{Rings} \land \deg(u) > 1 \land \deg(v) > 1 \land e \neq \text{Amide C-N})$$
-
-Amide $\text{C}-\text{N}$ bonds are excluded due to partial double-bond character from $\pi$-resonance conjugation.
-
-#### 4. Aromatic Proportion (`AromaticProportion`)
-Ratio of aromatic heavy atoms to total heavy atoms:
-
-$$\text{AP} = \frac{\sum_{i \in \mathcal{V}} \mathbb{I}(\text{atom } i \text{ is aromatic})}{|\mathcal{V}|}$$
-
-Captures rigid planarity and high crystal lattice enthalpy ($\Delta H_{\text{lattice}}$) that impairs aqueous solvation.
-
-#### 5. Topological Polar Surface Area (`TPSA`)
-Sum of polar fragment surface contributions (Ertl, Rohde, & Selzer, 2000):
-
-$$\text{TPSA} = \sum_{j \in \{\text{O, N polar fragments}\}} S_j$$
-
-where $S_j$ is the pre-computed 2D surface area parameter based on nitrogen/oxygen hybridization and attached hydrogen count.
-
-#### 6. Hydrogen Bond Donors (`NumHDonors`)
-Count of all heteroatoms carrying protic hydrogens (Lipinski definition):
-
-$$N_{\text{HBD}} = \sum_{i \in \{\text{O, N}\}} h_i$$
-
-#### 7. Hydrogen Bond Acceptors (`NumHAcceptors`)
-Count of electronegative valence atoms capable of accepting hydrogen bonds:
-
-$$N_{\text{HBA}} = \sum_{i \in \mathcal{V}} \mathbb{I}(\text{Element}(i) \in \{\text{O, N}\})$$
-
-#### 8. Molar Refractivity (`MolMR`)
-Estimate of overall molecular polarizability and steric volume via additive atom-type contributions:
-
-$$\text{MolMR} = \sum_{i=1}^{|\mathcal{V}|} r_i$$
-
-Related to the Lorentz-Lorenz equation $\text{MR} = \frac{n^2 - 1}{n^2 + 2} \frac{M}{\rho}$, where $n$ is the refractive index and $\rho$ is density.
-
-#### 9. Fraction of $sp^3$ Carbons (`FractionCSP3`)
-Quantifies molecular three-dimensionality and saturation ("escape from flatland"):
-
-$$\text{FractionCSP3} = \frac{\sum_{i \in \mathcal{V}_{\text{C}}} \mathbb{I}(\text{Hybridization}(i) = sp^3)}{|\mathcal{V}_{\text{C}}|}$$
-
-Molecules with higher $\text{FractionCSP3}$ exhibit lower molecular packing efficiency in crystal lattices, leading to lower melting points and higher aqueous solubility.
-
-#### 10. Ring Counts (`NumAromaticRings`, `NumAliphaticRings`, `RingCount`)
-Computed via the Smallest Set of Smallest Rings (SSSR) decomposition:
-
-$$\text{RingCount} = \text{NumAromaticRings} + \text{NumAliphaticRings} + \text{NumBridgedRings}$$
+![Model Accuracy Benchmark](model_accuracy_evaluation_v2.png)
 
 ---
 
@@ -223,73 +167,23 @@ Validation was conducted using both 5-Fold Stratified Cross-Validation ($K=5$) a
 
 ---
 
-## What Can Be Pulled Off Through This Code
+## Exact Algorithms for the 12 Chemical Descriptors
 
-This repository provides an automated, reproducible foundation for a wide range of computational chemistry, pharmacology, and drug development workflows:
+Every molecule $\mathcal{M} = (\mathcal{V}, \mathcal{E})$ is parsed into an RDKit molecular graph with heavy vertices $\mathcal{V}$ and covalent edges $\mathcal{E}$:
 
-```
-                          Downstream Workflows
- ┌───────────────────────────────────┼───────────────────────────────────┐
- ▼                                   ▼                                   ▼
-High-Throughput Screen          Lead Optimization & SAR          BCS Triage & Formulation
-(10k+ SMILES/minute)            (Resolve Solubility Cliffs)      (MAD & Delivery Planning)
-```
+| Descriptor | Mathematical Formulation | Description & Chemical Role |
+| :--- | :--- | :--- |
+| **`MolLogP`** | $\sum_{i=1}^{|\mathcal{V}|} a_i$ | Wildman-Crippen additive atom contributions across 68 empirical classes; quantifies hydrophobicity. |
+| **`MolWt`** | $\sum_{i=1}^{|\mathcal{V}|} (\bar{A}_i + h_i \bar{A}_{\text{H}})$ | Total molecular mass from IUPAC standard atomic weights including implicit hydrogens. |
+| **`NumRotatableBonds`** | $\sum_{e \in \mathcal{E}_{\text{single}}} \mathbb{I}(e \notin \text{Rings} \land \text{non-terminal})$ | Torsionally free single bonds (excluding amide $\text{C}-\text{N}$ due to $\pi$-resonance). |
+| **`AromaticProportion`** | $\frac{\sum_{i \in \mathcal{V}} \mathbb{I}(\text{atom } i \text{ is aromatic})}{|\mathcal{V}|}$ | Fraction of heavy atoms in aromatic systems; penalizes solubility via crystal lattice energy. |
+| **`TPSA`** | $\sum_{j \in \{\text{O, N polar}\}} S_j$ | Topological Polar Surface Area (Ertl et al.) from pre-computed 2D fragment surface areas. |
+| **`NumHDonors` (HBD)** | $\sum_{i \in \{\text{O, N}\}} h_i$ | Protic hydrogens on heteroatoms capable of hydrogen bond donation (Lipinski). |
+| **`NumHAcceptors` (HBA)**| $\sum_{i \in \mathcal{V}} \mathbb{I}(\text{Element}(i) \in \{\text{O, N}\})$ | Electronegative valence nitrogen and oxygen atoms capable of accepting hydrogen bonds. |
+| **`MolMR`** | $\sum_{i=1}^{|\mathcal{V}|} r_i$ | Molar Refractivity (Wildman-Crippen); estimates polarizability and steric volume via Lorentz-Lorenz. |
+| **`FractionCSP3`** | $\frac{N_{\text{C}, sp^3}}{N_{\text{C}, \text{total}}}$ | Fraction of $sp^3$-hybridized carbons; measures molecular 3D saturation ("escape from flatland"). |
+| **Ring Invariants** | SSSR decomposition | `NumAromaticRings`, `NumAliphaticRings`, and `RingCount` ($= \text{Aromatic} + \text{Aliphatic} + \text{Bridged}$). |
 
-### 1. High-Throughput In-Silico Virtual Screening
-* **Screening Combinatorial Libraries**: Screen millions of compounds from ZINC20, PubChem, Enamine, or ChEMBL prior to purchasing or synthesis.
-* **Speed**: Featurizes and predicts solubility for over **12,000 compounds per minute** on a standard multi-core CPU.
-* **Early ADMET Filtering**: Weed out insoluble candidates (e.g., $\log S < -6$) early in the hit-to-lead cascade, saving tens of thousands of dollars in wasted assay consumables.
-
-### 2. Lead Optimization & Structure-Activity Relationships (SAR)
-* **Solubility Cliff Identification**: Detect subtle structural modifications (e.g., swapping a benzene ring for a pyridine, appending solubilizing basic morpholine tails, or breaking molecular symmetry) that drastically alter $\log S$.
-* **Escape from Flatland Guidance**: Quantitatively monitor `FractionCSP3` and aromatic proportion while designing analogs, preventing medicinal chemistry series from falling into "molecular obesity" and low solubility traps.
-
-### 3. Biopharmaceutics Classification System (BCS) Triage
-In clinical drug development, oral absorption depends on aqueous solubility and intestinal membrane permeability:
-
-$$\text{BCS Class I: High Solubility, High Permeability}$$
-$$\text{BCS Class II: Low Solubility, High Permeability}$$
-$$\text{BCS Class III: High Solubility, Low Permeability}$$
-$$\text{BCS Class IV: Low Solubility, Low Permeability}$$
-
-* **Formulation Strategy Selection**:
-  * If predicted $\log S$ corresponds to **BCS Class II/IV**, pharmaceutical scientists can proactively select specialized drug delivery systems:
-    * **Cyclodextrin inclusion complexes** (e.g., HP-$\beta$-CD for Voriconazole)
-    * **Self-Emulsifying Drug Delivery Systems (SEDDS)**
-    * **Amorphous solid dispersions (ASD)** via hot-melt extrusion or spray-drying
-    * **Lipid nanoparticles (LNPs) or nanosuspensions**
-
-### 4. Maximum Absorbable Dose (MAD) Calculation
-Pair predicted solubility directly with physiological transit parameters to compute the theoretical maximum absorbable dose:
-
-$$\text{MAD} = S \times K_a \times \text{SIWV} \times \text{SITT}$$
-
-where:
-* $S$: Predicted aqueous solubility at intestinal $\text{pH}$ ($\text{mg/mL}$)
-* $K_a$: Transintestinal absorption rate constant ($\text{min}^{-1}$)
-* $\text{SIWV}$: Small Intestinal Water Volume ($\sim 250\text{ mL}$)
-* $\text{SITT}$: Small Intestinal Transit Time ($\sim 180 - 240\text{ min}$)
-
-### 5. Automated Chemical Entity Resolution & Batch CSV Processing
-* Accepts free-text generic drug names, trade names, and IUPAC strings, resolving them via PubChem REST endpoints into canonical SMILES.
-* Computes complete 12-descriptor dataframes and Morgan fingerprints for any chemical list and exports high-dimensional structured CSVs ready for downstream ML training.
-
-### 6. Automated Model Diagnostic Visualization
-* Automated generation of 300 DPI publication-ready vector charts (Parity Scatter Plots and Gaussian Residual Distribution Histograms) suitable for peer-reviewed journal submission (e.g., *J. Med. Chem.*, *Bioinformatics*, *JCIM*).
-
----
-
-## Model Benchmark & Validation
-
-The predictive model was systematically evaluated against the complete Delaney 1,144 compound dataset:
-
-| Model Architecture | Features | Cross-Val $R^2$ | Benchmark $R^2$ | Benchmark RMSE | Benchmark MAE | Pearson $r$ |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Delaney ESOL Baseline** (Linear Regression) | 4 | 72.84% | 72.84% | 1.077 | 0.835 | 0.854 |
-| **Random Forest Regressor** | 524 | 88.40% | 98.71% | 0.237 | 0.155 | 0.994 |
-| **Extra Trees Regressor (Production)** | **524** | **91.52%** | **99.93%** | **0.057** | **0.038** | **1.000** |
-
-![Model Accuracy Benchmark](model_accuracy_evaluation_v2.png)
 
 ---
 
